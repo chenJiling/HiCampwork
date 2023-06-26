@@ -2,27 +2,20 @@ package tw.hicamp.product.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jsonb.JsonbAutoConfiguration;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import tw.hicamp.product.model.Product;
 import tw.hicamp.product.model.ProductDTO;
 import tw.hicamp.product.model.ProductPicture;
@@ -149,12 +142,28 @@ public class ProductController {
 		return product; 
 	}
 
-	// 取照片
+	// 取照片s
 	@ResponseBody
 	@GetMapping("/product/pictures")
 	public ResponseEntity<byte[]> getPics(@RequestParam("picID") Integer picId) {
 		ResponseEntity<byte[]> productPics = pPicService.getProductPics(picId);
 		return productPics;
+	}
+	
+	//取大照片
+	@ResponseBody
+	@GetMapping("/product/getBigPic")
+	public ResponseEntity<byte[]> getMemberPhoto(@RequestParam("productNo")int productNo){
+		Product product = pService.getProduct(productNo);
+		byte[] bigPic = product.getProductBigPicture();
+		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bigPic);
+	}
+	
+	//更新大頭照
+	@ResponseBody
+	@PostMapping("/product/updateBigPic")
+	public boolean updateBigPic(@RequestParam("productNo") int productNo,@RequestParam("bigPic")MultipartFile bigPic) {
+		return pService.updateBicPic(productNo, bigPic);
 	}
 
 	// 新增照片
@@ -174,7 +183,7 @@ public class ProductController {
 		return "刪除OK!!";
 	}
 	
-	// 更新照片
+	// 更新商品介紹照片
 	@ResponseBody
 	@PostMapping("/product/resetPic")
 	public String resetPic(@RequestParam("productNo") Integer productNo ,@RequestParam("resetPics") MultipartFile[] files ) throws IOException {

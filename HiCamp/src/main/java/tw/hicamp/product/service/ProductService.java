@@ -1,5 +1,6 @@
 package tw.hicamp.product.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import tw.hicamp.product.model.Product;
@@ -65,6 +66,20 @@ public class ProductService {
 		Page<Product> page = pRepo.findAll(pgb);
 		
 		return page;
+	}
+	
+	//更新首圖
+	public boolean updateBicPic(Integer productNo,MultipartFile productBigPic) {
+		Product product = pRepo.findById(productNo).get();
+		
+		try {
+			product.setProductBigPicture(productBigPic.getBytes());
+			return true;
+		} catch (IOException e) {
+			System.out.println("updateBicPic false");
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }
