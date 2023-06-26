@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description"
+		content="Responsive Bootstrap4 Shop Template, Created by Imran Hossain from https://imransdesign.com/">
+
+	<!-- title -->
+	<title>News</title>
+	<!-- axios -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<!-- favicon -->
+	<link rel="shortcut icon" type="image/png" href="assets/img/favicon.png">
+	<!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+	<!-- fontawesome -->
+	<link rel="stylesheet" href="assets/css/all.min.css">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<!-- owl carousel -->
+	<link rel="stylesheet" href="assets/css/owl.carousel.css">
+	<!-- magnific popup -->
+	<link rel="stylesheet" href="assets/css/magnific-popup.css">
+	<!-- animate css -->
+	<link rel="stylesheet" href="assets/css/animate.css">
+	<!-- mean menu css -->
+	<link rel="stylesheet" href="assets/css/meanmenu.min.css">
+	<!-- main style -->
+	<link rel="stylesheet" href="assets/css/main.css">
+	<!-- responsive -->
+	<link rel="stylesheet" href="assets/css/responsive.css">
+<style>
+.campsite-info {
+  /*width: 200px; /* 设置容器的宽度 */
+  height: 200px;
+  overflow: hidden; /* 隐藏超出容器宽度的部分文本 */
+  /*white-space: nowrap; /* 防止文本换行 */
+  text-overflow: ellipsis; /* 在文本溢出时显示省略号 */
+}
+</style>
+</head>
+
+<body>
+
+	<div th:replace="~{/layout/frontTopBar}"></div>
+
+
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>Campsite</p>
+						<h1>露營區</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+
+	<!-- latest news -->
+	<div class="latest-news mt-150 mb-150">
+		<div class="container">
+			<div id="campsiteArea" class="row">
+
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-center">
+						<div class="pagination-wrap">
+							<ul>
+								<li><a href="#">Prev</a></li>
+								<li><a href="#">1</a></li>
+								<li><a class="active" href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">Next</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- end latest news -->
+
+	<!-- logo carousel -->
+	<div class="logo-carousel-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="logo-carousel-inner">
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/1.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/2.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/3.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/4.png" alt="">
+						</div>
+						<div class="single-logo-item">
+							<img src="assets/img/company-logos/5.png" alt="">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end logo carousel -->
+
+	<div th:replace="~{/layout/frontBottomBar}"></div>
+	<script>
+		window.onload = function () {
+			axios.get('http://localhost:8080/HiCamp/campsite/data')
+				.then(function (response) {
+					// 將每個露營區插入HTML
+					console.log(response)
+					var campsiteArea = document.getElementById('campsiteArea');
+					let newContent = '';  // 新增一個變數來存儲新內容
+					response.data.forEach(function (campsite) {
+						newContent += `
+					<div class="col-lg-4 col-md-6">
+						<div class="single-latest-news">
+							<a href="single-news.html">
+								 <img src="http://localhost:8080/HiCamp/campsite/getCampsitePicture?id=`+campsite.campsitePictureNo+`">
+
+
+							</a>
+							<div class="news-text-box">
+								<h3><a href="single-news.html">${campsite.campsiteName}</a></h3>
+								<div class="campsite-info">
+								  <p class="excerpt">${campsite.campsiteInfo}</p>
+								</div>
+
+								<a href="single-news.html" class="read-more-btn">查看詳情<i class="fas fa-angle-right"></i></a>
+							</div>
+						</div>
+					</div>
+				`;
+					});
+					// 在所有露營區都添加到 newContent 後，再更新 campsiteArea 的內容
+					campsiteArea.innerHTML += newContent;
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		}
+
+	</script>
+
+</body>
+
+</html>
