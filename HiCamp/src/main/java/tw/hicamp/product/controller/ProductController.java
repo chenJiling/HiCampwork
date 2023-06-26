@@ -2,6 +2,7 @@ package tw.hicamp.product.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.aspectj.lang.annotation.Pointcut;
@@ -48,7 +49,7 @@ public class ProductController {
 		return product;
 	}
 
-	// 主頁
+	// 後台主頁
 	@GetMapping("/productHome")
 	public String getAllProducts(Model m) {
 		List<Product> product = pService.getAllProduct();
@@ -191,6 +192,15 @@ public class ProductController {
 			pService.addProduct(product);
 			return "更新照片完成";
 			
+	}
+	
+	//前台主頁
+	@GetMapping("/shopping")
+	public String getShopProducts(Model m) {
+		List<Product> productList = pService.getAllProduct();
+		m.addAttribute("productList", productList);
+		
+		return "product/shopping";
 	}
 
 }

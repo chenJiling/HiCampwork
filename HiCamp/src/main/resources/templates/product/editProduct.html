@@ -55,11 +55,7 @@
               <div>
                 <form id="editTable">
                   <table style="width: 100%; font-size: 20px;">
-                    <tr>
-                      <img th:src="'http://localhost:8080/HiCamp/product/aProduct?productNo='+${product.productNo}"
-                        style="width: 300px"><br>
-                      <button class="delBtn btn btn-outline-dark" id="${product.productNo}">刪除照片</button>
-                    </tr>
+
                     <tr>
                       <td>商品編號</td>
                       <input th:field="${product.productNo}" type="hidden">
@@ -77,7 +73,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>商品標題</td>
+                      <td>商品名稱</td>
                       <td><input class="form-control" th:field="${product.productName}"></td>
                     </tr>
                     <tr>
@@ -101,9 +97,20 @@
                           <option value="下架">下架</option>
                         </select></td>
                     </tr>
+                    
                   </table>
                   <button class="btn btn-outline-dark" id="editTableBtn">儲存商品資訊</button>
                 </form>
+              </div>
+              <div>
+              	<form id="editBigPic">
+                      <img th:src="'http://localhost:8080/HiCamp/product/aProduct?productNo='+${product.productNo}"
+                        style="width: 300px"><br>
+                      <button class="delBtn btn btn-outline-dark" id="${product.productNo}">刪除照片</button>
+                      <input type="file" id="bigPic" name="bigPic" class="form-control" />
+                      <div id="preview_bigPic"> </div>
+                      <button class="btn btn-outline-dark" id="savebigPic" style="margin-top: 20px;">儲存照片</button>
+              	</form>
               </div>
               <div style="width:300px;">
                 圖片預覽<br>
