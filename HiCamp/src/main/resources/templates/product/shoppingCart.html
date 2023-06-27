@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description"
+		content="Responsive Bootstrap4 Shop Template, Created by Imran Hossain from https://imransdesign.com/">
+
+	<!-- title -->
+	<title>HiCamp購物車</title>
+
+	<!-- favicon -->
+	<link rel="shortcut icon" type="image/png" href="assets/img/favicon.png">
+	<!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+	<!-- fontawesome -->
+	<link rel="stylesheet" href="assets/css/all.min.css">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<!-- owl carousel -->
+	<link rel="stylesheet" href="assets/css/owl.carousel.css">
+	<!-- magnific popup -->
+	<link rel="stylesheet" href="assets/css/magnific-popup.css">
+	<!-- animate css -->
+	<link rel="stylesheet" href="assets/css/animate.css">
+	<!-- mean menu css -->
+	<link rel="stylesheet" href="assets/css/meanmenu.min.css">
+	<!-- main style -->
+	<link rel="stylesheet" href="assets/css/main.css">
+	<!-- responsive -->
+	<link rel="stylesheet" href="assets/css/responsive.css">
+	<style>
+		thead td {
+			font-size: 20px;
+		}
+
+		tbody td {
+			font-size: 15px;
+		}
+	</style>
+
+</head>
+
+<body>
+	<div th:replace="~{/layout/frontTopBar}"></div>
+
+	<!-- TopBar breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<p>Wild Adventures</p>
+						<h1>Hiking & Camping</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end TopBar breadcrumb section -->
+
+	<!-- latest news -->
+
+	<div class="latest-news mt-150 mb-150" style="margin-top:5px">
+
+		<nav aria-label="breadcrumb" style=" font-size:1.5em;display: block; ">
+			<ol class="breadcrumb"
+				style="background-color:#fff; margin-left:310px; margin-top:10px; display: flex; flex-wrap: wrap;  ">
+				<li class="breadcrumb-item active" aria-current="page" th:text="${product.productType}"></li>
+			</ol>
+		</nav>
+
+		<div class="container">
+			<div class="row" style="width: 1000px;">
+				<table>
+					<thead>
+						<tr>
+							<td>
+								<h2>Hicamp出貨單</h2>
+							</td>
+							<td></td>
+							<td></td>
+							<td colspan="3"></td>
+						</tr>
+						<tr>
+							<td>商品名稱</td>
+							<td>優惠</td>
+							<td>商品數量</td>
+							<td>單價</td>
+							<td>小計</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td th:text="${product.productName}"></td>
+							<td></td>
+							<td><input id="itemQuantity" name="itemQuantity" class="form-control" type="number"
+									style="width:200px;" value="1" min="1" th:max="${product.productQuantity}"></td>
+							<td th:text="${product.productPrice}"><input th:value="${product.productPrice}"
+									id="productPrice" type="hidden"></td>
+							<td>
+								<input type="text" id="unit" th:value="${product.productPrice}">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div style="width: 1000px;">
+				<div class="card" style="width: 100%;">
+					<div class="card-header">
+						送貨及付款方式
+					</div>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">
+							<select name="" id="">
+								<option value="台灣"></option>
+							</select>
+							<div role="tw-city-selector">
+								<select name="county" class="county" id="address">
+									<option value=""></option>
+								</select>
+							</div>
+						</li>
+
+
+
+						<li class="list-group-item">送貨方式</li>
+						<li class="list-group-item">Vestibulum at eros</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- end latest news -->
+
+		<!-- logo carousel -->
+		<div class=" logo-carousel-section">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="logo-carousel-inner">
+							<div class="single-logo-item">
+								<img src="assets/img/company-logos/1.png" alt="">
+							</div>
+							<div class="single-logo-item">
+								<img src="assets/img/company-logos/2.png" alt="">
+							</div>
+							<div class="single-logo-item">
+								<img src="assets/img/company-logos/3.png" alt="">
+							</div>
+							<div class="single-logo-item">
+								<img src="assets/img/company-logos/4.png" alt="">
+							</div>
+							<div class="single-logo-item">
+								<img src="assets/img/company-logos/5.png" alt="">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end logo carousel -->
+
+		<div th:replace="~{/layout/frontBottomBar}"></div>
+
+		<script>
+			$("#twzipcode").twzipcode();
+			new TwCitySelector();
+
+			$('#itemQuantity').change(function () {
+				let number = Number($('#itemQuantity').val()) * Number($('#productPrice').val());
+				$('#unit').attr('value' = number);
+			})
+
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/tw-city-selector@2.1.1/dist/tw-city-selector.min.js"></script>
+		<script src="https://kit.fontawesome.com/a260a05f7c.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

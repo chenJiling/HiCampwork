@@ -1,21 +1,27 @@
 package tw.hicamp.member.model;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import tw.hicamp.forum.model.bean.Post;
 import tw.hicamp.forum.model.bean.PostComment;
+import tw.hicamp.product.model.*;
+
 
 @Entity
 @Table(name = "member")
@@ -40,12 +46,19 @@ public class Member {
 	private byte[] memberPhoto;
 	
 	@JsonIgnore
-	@JsonIgnoreProperties("member")
-	@OneToMany(fetch = FetchType.LAZY,mappedBy = "member")
+	@JsonIgnoreProperties("memberNo")
+	@OneToMany(fetch = FetchType.LAZY,mappedBy = "memberNo")
 	private Set<Post> posts = new HashSet<>();
 	
 	@JsonIgnore
 	@JsonIgnoreProperties("member")
 	@OneToMany(fetch = FetchType.LAZY,mappedBy = "member")
 	private Set<PostComment> postcomments = new HashSet<>();
+	
+	@JsonIgnore
+	@JsonIgnoreProperties("member")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Orders> orders = new ArrayList<>();
+	
+	
 }

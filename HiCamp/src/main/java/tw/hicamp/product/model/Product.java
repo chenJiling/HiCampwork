@@ -36,8 +36,6 @@ public class Product {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductPicture> pruductPictures = new ArrayList<ProductPicture>();
 
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
-//	private List<PruductReview> pruductReviews = new ArrayList<PruductReview>();
 
 
 }

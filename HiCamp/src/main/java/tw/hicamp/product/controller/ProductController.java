@@ -50,7 +50,7 @@ public class ProductController {
 		return "product/productHome";
 	}
 
-	// 取一筆資料
+	// 後台取一筆資料
 	@GetMapping("/product/aProduct")
 	public String getProduct(@RequestParam("productNo") int productNo, Model m) {
 
@@ -123,8 +123,7 @@ public class ProductController {
 								@RequestParam("productInfo") String productInfo,
 								@RequestParam("productPrice") int productPrice, 
 								@RequestParam("productQuantity") int productQuantity,
-								@RequestParam("productStutas") String productStutas,
-								@RequestParam("bigPic") MultipartFile bigPic
+								@RequestParam("productStutas") String productStutas
 								) throws IOException {
 
 		Product product = new Product();
@@ -135,7 +134,6 @@ public class ProductController {
 		product.setProductPrice(productPrice);
 		product.setProductQuantity(productQuantity);
 		product.setProductStutas(productStutas);
-		product.setProductBigPicture(bigPic.getBytes());
 
 		pService.updateProductByNo(product);
 		
@@ -162,7 +160,7 @@ public class ProductController {
 	//更新大頭照
 	@ResponseBody
 	@PostMapping("/product/updateBigPic")
-	public boolean updateBigPic(@RequestParam("productNo") int productNo,@RequestParam("bigPic")MultipartFile bigPic) {
+	public Integer updateBigPic(@RequestParam("productNo") int productNo,@RequestParam("bigPic")MultipartFile bigPic) {
 		return pService.updateBicPic(productNo, bigPic);
 	}
 
@@ -207,9 +205,71 @@ public class ProductController {
 	@GetMapping("/shopping")
 	public String getShopProducts(Model m) {
 		List<Product> productList = pService.getAllProduct();
-		m.addAttribute("productList", productList);
+		
+		List<Product> upPorduct = new ArrayList<>();
+		for (Product apro:productList) {
+			if (apro.getProductStutas().equals("上架")) {
+				upPorduct.add(apro);
+			}
+		}
+		
+		m.addAttribute("productList", upPorduct);
 		
 		return "product/shopping";
+	}
+	
+	// 前台取一筆資料
+	@GetMapping("/shopping/shopProduct")
+	public String getShopProduct(@RequestParam("productNo") int productNo, Model m) {
+
+		Product product = pService.getProduct(productNo);
+
+		List<Integer> productPic = pPicService.getProductPic(productNo);
+
+		ProductDTO productDTO = new ProductDTO();
+		productDTO.setProductNo(product.getProductNo());
+		productDTO.setProductType(product.getProductType());
+		productDTO.setProductName(product.getProductName());
+		productDTO.setProductPrice(product.getProductPrice());
+		productDTO.setProductQuantity(product.getProductQuantity());
+		productDTO.setProductInfo(product.getProductInfo());
+		productDTO.setProductStutas(product.getProductStutas());
+		productDTO.setProductBigPicture(product.getProductBigPicture());
+		productDTO.setProductPisNos(productPic);
+
+		System.out.println(productPic);
+
+		m.addAttribute("product", productDTO);
+
+		return "product/shopProduct";
+	}
+	
+	// shopping cart
+	@GetMapping("/shopping/shoppingCart")
+	public String getShoppingCart(@RequestParam("productNo") int productNo, HttpSession session, Model m) {
+		
+		Integer memberNo = (Integer)session.getAttribute("memberNo");
+
+		Product product = pService.getProduct(productNo);
+
+		List<Integer> productPic = pPicService.getProductPic(productNo);
+
+		ProductDTO productDTO = new ProductDTO();
+		productDTO.setProductNo(product.getProductNo());
+		productDTO.setProductType(product.getProductType());
+		productDTO.setProductName(product.getProductName());
+		productDTO.setProductPrice(product.getProductPrice());
+		productDTO.setProductQuantity(product.getProductQuantity());
+		productDTO.setProductInfo(product.getProductInfo());
+		productDTO.setProductStutas(product.getProductStutas());
+		productDTO.setProductBigPicture(product.getProductBigPicture());
+		productDTO.setProductPisNos(productPic);
+
+		System.out.println(productPic);
+
+		m.addAttribute("product", productDTO);
+
+		return "product/shoppingCart";
 	}
 
 }

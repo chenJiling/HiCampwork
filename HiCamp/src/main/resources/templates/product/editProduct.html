@@ -52,9 +52,9 @@
             <!-- 從這裡開始改喔 -->
             <div style="display: flex; justify-content: space-around; width: 1600px;">
               <!-- 商品首圖 -->
-              <div style="width: 100px;">
+              <div id="firstPic" style="width: 100px;">
                 <img th:src="'http://localhost:8080/HiCamp/product/getBigPic?productNo='+${product.productNo}"
-                  style="width: 300px"><br>
+                  style="width: 200px"><br>
                 <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#bigpicModal">
                   編輯照片 </button>
               </div>
@@ -68,13 +68,14 @@
                     </div>
                     <div class="modal-body">
                       <form id="editBigPic">
+                        <input th:field="${product.productNo}" type="hidden">
                         <input type="file" id="bigPic" name="bigPic" class="form-control" />
-                        <div id="preview_bigPic"> </div>
                       </form>
+                      <div id="preview_bigPic"> </div>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                      <button type="button" id="savebigPic" class="btn btn-primary">更新</button>
+                      <button type="button" id="savebigPic" class="btn btn-primary" data-bs-dismiss="modal">更新</button>
                     </div>
                   </div>
                 </div>
@@ -218,6 +219,35 @@
           })
       }
 
+      //更新首圖
+      $('#savebigPic').click(function (e) {
+        e.preventDefault();
+        console.log('savebigPic');
+        let editPic = document.getElementById('editBigPic');
+        let formBigPic = new FormData(editPic);
+        updateBigPic(formBigPic);
+      })
+      function updateBigPic(formBigPic) {
+        axios({
+          url: 'http://localhost:8080/HiCamp/product/updateBigPic',
+          method: 'post',
+          data: formBigPic
+        })
+          .then(res => {
+            Swal.fire({
+              position: 'top-center',
+              icon: 'success',
+              title: '更新成功',
+              showConfirmButton: false,
+              timer: 1500
+            })
+            $('#firstPic img').attr({ "src": $(".prev").attr("src") })
+          })
+          .catch(err => {
+            console.log('savebigPic err: ' + err);
+          })
+      }
+
 
       //刪除照片
       $('.delBtn').click(function () {
@@ -276,6 +306,7 @@
       }
       //圖片預覽
       $("#bigPic").change(function () {
+        console.log('123')
         readURL(this);
       });
       function readURL(input) {
@@ -283,7 +314,7 @@
         if (input.files && input.files[0]) {
           var reader = new FileReader();
           reader.onload = function (e) {
-            var img = $("<br><img width='300'>").attr('src', e.target.result);
+            var img = $("<br><img class='prev' width='200'>").attr('src', e.target.result);
             $('#preview_bigPic').empty();
             $('#preview_bigPic').append(img);
           }
@@ -300,7 +331,7 @@
           for (let i = 0; i < input.files.length; i++) {
             var reader = new FileReader();
             reader.onload = function (e) {
-              var img = $("<img width='200'>").attr('src', e.target.result);
+              var img = $("<br><img width='200'>").attr('src', e.target.result);
               $('#preview_pics').append(img);
             }
             reader.readAsDataURL(input.files[i]);

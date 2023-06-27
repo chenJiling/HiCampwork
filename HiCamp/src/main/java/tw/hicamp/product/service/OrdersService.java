@@ -41,17 +41,12 @@ public class OrdersService {
 		return oRepo.findAll();
 	}
 
-	// 修改訂單
+	// 修改訂單狀態
 	@Transactional
-	public Orders updateOrder(Orders order) {
-		Optional<Orders> optional = oRepo.findById(order.getOrderNo());
-		
-		if (optional.isPresent()) {
-			Orders order1 = optional.get();
-			return order1;
-		}
-		System.out.println("no update data");
-		return null;
+	public boolean updateOrderStutas(int orderNo, String stutas) {
+		Orders order = oRepo.findById(orderNo).get();
+		order.setOrderStatus(stutas);
+		return true;
 	}
 
 	// 刪除訂單
@@ -59,9 +54,6 @@ public class OrdersService {
 		oRepo.deleteById(orderNo);
 	}
 	
-//	public Orders findLastest() {
-//		return oRepo.findFirstByOrderNoByOrderDateDesc();
-//	}
 	
 	public Page<Orders> findByPage(Integer pageNumber) {
 		Pageable pgb = PageRequest.of(pageNumber-1, 3, Sort.Direction.DESC, "added");

@@ -69,16 +69,17 @@ public class ProductService {
 	}
 	
 	//更新首圖
-	public boolean updateBicPic(Integer productNo,MultipartFile productBigPic) {
+	@Transactional
+	public Integer updateBicPic(Integer productNo,MultipartFile productBigPic) {
 		Product product = pRepo.findById(productNo).get();
 		
 		try {
 			product.setProductBigPicture(productBigPic.getBytes());
-			return true;
+			return productNo;
 		} catch (IOException e) {
 			System.out.println("updateBicPic false");
 			e.printStackTrace();
-			return false;
+			return productNo;
 		}
 	}
 
