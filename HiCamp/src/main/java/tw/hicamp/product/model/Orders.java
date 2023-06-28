@@ -30,6 +30,8 @@ public class Orders {
 	private String orderShipping;
 	private String orderPayWay;
 	private String orderShipAddress;
+	private String orderInfo;
+	private String orderMessage;
 	
 	@ManyToOne
 	@JsonBackReference

@@ -244,32 +244,5 @@ public class ProductController {
 		return "product/shopProduct";
 	}
 	
-	// shopping cart
-	@GetMapping("/shopping/shoppingCart")
-	public String getShoppingCart(@RequestParam("productNo") int productNo, HttpSession session, Model m) {
-		
-		Integer memberNo = (Integer)session.getAttribute("memberNo");
-
-		Product product = pService.getProduct(productNo);
-
-		List<Integer> productPic = pPicService.getProductPic(productNo);
-
-		ProductDTO productDTO = new ProductDTO();
-		productDTO.setProductNo(product.getProductNo());
-		productDTO.setProductType(product.getProductType());
-		productDTO.setProductName(product.getProductName());
-		productDTO.setProductPrice(product.getProductPrice());
-		productDTO.setProductQuantity(product.getProductQuantity());
-		productDTO.setProductInfo(product.getProductInfo());
-		productDTO.setProductStutas(product.getProductStutas());
-		productDTO.setProductBigPicture(product.getProductBigPicture());
-		productDTO.setProductPisNos(productPic);
-
-		System.out.println(productPic);
-
-		m.addAttribute("product", productDTO);
-
-		return "product/shoppingCart";
-	}
 
 }

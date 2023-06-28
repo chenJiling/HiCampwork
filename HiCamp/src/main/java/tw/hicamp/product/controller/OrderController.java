@@ -65,7 +65,7 @@ public class OrderController {
 		
 		return "加入訂單成功"; 
 	}
-	
+	// 更改訂單狀態
 	@PostMapping("/product/updateStutas")
 	public boolean updateOrderStutas(int orderNo, String stutas) {
 		return oService.updateOrderStutas(orderNo, stutas);

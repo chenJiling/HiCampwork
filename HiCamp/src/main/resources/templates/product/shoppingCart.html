@@ -69,12 +69,12 @@
 		<nav aria-label="breadcrumb" style=" font-size:1.5em;display: block; ">
 			<ol class="breadcrumb"
 				style="background-color:#fff; margin-left:310px; margin-top:10px; display: flex; flex-wrap: wrap;  ">
-				<li class="breadcrumb-item active" aria-current="page" th:text="${product.productType}"></li>
+				<li class="breadcrumb-item active" aria-current="page"></li>
 			</ol>
 		</nav>
 
-		<div class="container">
-			<div class="row" style="width: 1000px;">
+		<div class="container" style="width:60%;">
+			<div class="row">
 				<table>
 					<thead>
 						<tr>
@@ -94,41 +94,123 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td th:text="${product.productName}"></td>
-							<td></td>
-							<td><input id="itemQuantity" name="itemQuantity" class="form-control" type="number"
-									style="width:200px;" value="1" min="1" th:max="${product.productQuantity}"></td>
-							<td th:text="${product.productPrice}"><input th:value="${product.productPrice}"
-									id="productPrice" type="hidden"></td>
-							<td>
-								<input type="text" id="unit" th:value="${product.productPrice}">
-							</td>
-						</tr>
+						<th:block th:each="cart : ${cartDTOList}">
+
+							<tr>
+								<td th:text="${cart.productName}"></td>
+								<td></td>
+								<td>
+									<input id="itemQuantity" name="itemQuantity" class="quantity form-control"
+										type="number" style="width:200px;" value="1" min="1"
+										th:max="${cart.productQuantity}">
+								</td>
+								<td>
+									<input th:value="${cart.productPrice}" id="productPrice" class="productPrice">
+								</td>
+								<td>
+									<input type="text" class="unit" th:value="${cart.productPrice}" style="width:100%;">
+								</td>
+							</tr>
+						</th:block>
 					</tbody>
 				</table>
 			</div>
-			<div style="width: 1000px;">
-				<div class="card" style="width: 100%;">
+			<div style="display: flex;justify-content: center;">
+				<div style="width: 1000px;">
+					<div class="card" style="width: 700px;">
+						<div class="card-header">
+							訂購資訊
+						</div>
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item">
+								<table>
+									<tr>
+										<td>會員姓名: <input type="hidden" id="memberName" th:value="${member.memberName}">
+										</td>
+										<td th:text="${member.memberName}"></td>
+									</tr>
+									<tr>
+										<td>電子信箱: </td>
+										<td th:text="${member.memberEmail}"></td>
+									</tr>
+									<tr>
+										<td>電話: <input type="hidden" id="memberPhone" th:value="${member.memberPhone}">
+										</td>
+										<td th:text="${member.memberPhone}"></td>
+									</tr>
+									<tr>
+										<td>地址: <input type="hidden" id="memberAddress"
+												th:value="${member.memberAddress}">
+										</td>
+										<td th:text="${member.memberAddress}"></td>
+									</tr>
+								</table>
+							</li>
+						</ul>
+					</div>
+					<div class="card" style="width: 700px;">
+						<div class="card-header" style="display: flex; align-items: center;">
+							送貨資料 <span style="margin-left: 50px;"><input type="checkbox" id="thesame">同會員資料</span>
+
+						</div>
+						<ul class="list-group list-group-flush">
+							<li class="list-group-item">
+
+								<table>
+									<tr>
+										<td>收件者姓名：</td>
+										<td><input type="text" id="orderName"></td>
+									</tr>
+									<tr>
+										<td>電話：</td>
+										<td><input type="text" id="orderTel"></td>
+									</tr>
+									<tr>
+										<td>送貨地址：</td>
+										<td><input type="text" id="orderAddr" style="width: 100%;"></td>
+									</tr>
+									<tr>
+										<td>訂單備註：</td>
+										<td><textarea name="orderMessage" id="orderMessage" cols="50" rows="5"
+												placeholder="有什麼想對賣家說嗎?"></textarea>
+										</td>
+									</tr>
+								</table>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="card" style="width: 500px; ">
 					<div class="card-header">
-						送貨及付款方式
+						付款資訊
 					</div>
 					<ul class="list-group list-group-flush">
 						<li class="list-group-item">
-							<select name="" id="">
-								<option value="台灣"></option>
-							</select>
-							<div role="tw-city-selector">
-								<select name="county" class="county" id="address">
-									<option value=""></option>
-								</select>
+							<div style="display: flex; justify-content: center;">
+								<div style="margin-right: 30px;">
+									<h3>Total price</h3>
+								</div>
+								<div><input type="text" id="total" style=" width:100px;" readonly></div>
 							</div>
 						</li>
-
-
-
-						<li class="list-group-item">送貨方式</li>
-						<li class="list-group-item">Vestibulum at eros</li>
+					</ul>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">
+							<table>
+								<tr>
+									<td><input type="checkbox">信用卡</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox">銀行轉帳</td>
+								</tr>
+							</table>
+						</li>
+					</ul>
+					<ul class="list-group list-group-flush" style="justify-content: center; align-items: center;">
+						<li class="list-group-item">
+							<button class="btn btn-dark" style="width: 300px;">結帳</button>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -166,15 +248,46 @@
 		<div th:replace="~{/layout/frontBottomBar}"></div>
 
 		<script>
-			$("#twzipcode").twzipcode();
-			new TwCitySelector();
 
-			$('#itemQuantity').change(function () {
-				let number = Number($('#itemQuantity').val()) * Number($('#productPrice').val());
-				$('#unit').attr('value' = number);
+			let unitlist = document.querySelectorAll('.unit');
+			let total = 0;
+			unitlist.forEach(element => {
+
+				total += parseInt(element.value);
+			});
+			console.log(total);
+			$('#total').val(total);
+
+
+			//小計
+			$('.quantity').change(function () {
+				let qua = $(this).val();
+				let price = $(this).parent().next().children("input").val();
+				// let price = $('.productPrice').val();
+				console.log(price);
+				let sum = qua * price;
+				$(this).parent().next().next().children("input").val(sum);
+
 			})
 
+			$('#thesame').click(function () {
+				let checked = $(this).prop('checked');
+				console.log(checked);
+				console.log($('#memberName').val());
+				$('#orderName').val($('#memberName').val());
+				$('#orderTel').val($('#memberPhone').val());
+				$('#orderAddr').val($('#memberAddress').val());
+
+			})
+
+			// $('#itemQuantity').change(function () {
+			// 	let number = Number($('#itemQuantity').val()) * Number($('#productPrice').val());
+			// 	$('#unit').attr({ 'value': number });
+			// })
+
 		</script>
+		<!-- twzip -->
+		<script th:src="@{/hicamp/js/twzipcode.min.js}"></script>
 		<script src="https://cdn.jsdelivr.net/npm/tw-city-selector@2.1.1/dist/tw-city-selector.min.js"></script>
 		<script src="https://kit.fontawesome.com/a260a05f7c.js" crossorigin="anonymous"></script>
 </body>
