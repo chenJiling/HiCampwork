@@ -10,4 +10,10 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Inte
 
 	@Query(value = "select * from shoppingCart where memberNo = :memberNo", nativeQuery = true)
 	List<ShoppingCart> findcartIdBymemberNo(@Param("memberNo") int memberNo);
+	
+	@Query(value = "select * from shoppingCart where memberNo = :memberNo and productNo = :productNo", nativeQuery = true)
+	ShoppingCart findByProductNo(@Param("productNo") int productNo, @Param("memberNo")int memberNo);
+	
+	@Query(value = "delete from shoppingCart where memberNo = :memberNo", nativeQuery = true)
+	boolean delCartByMember(@Param("memberNo") int memberNo);
 }

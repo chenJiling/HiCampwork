@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import tw.hicamp.product.model.OrderItem;
 import tw.hicamp.product.model.Orders;
 import tw.hicamp.product.model.OrdersRepository;
 
@@ -25,15 +26,18 @@ public class OrdersService {
 	public Orders addOrder(Orders order) {
 		return oRepo.save(order);
 	}
+	
+	// 新增訂單明細
+	public boolean newOrderItem(int orderNo, List<OrderItem> itemList) {
+		Orders order = oRepo.findById(orderNo).get();
+		order.setOrderItems(itemList);
+		return true;
+	}
 
 	// 查詢一筆訂單
 	public Orders getOrder(Integer orderNo) {
-		Optional<Orders> optional = oRepo.findById(orderNo);
+		return oRepo.findById(orderNo).get();
 		
-		if (optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
 	}
 
 	// 查詢全部訂單
@@ -52,6 +56,11 @@ public class OrdersService {
 	// 刪除訂單
 	public void delOrder(Integer orderNo) {
 		oRepo.deleteById(orderNo);
+	}
+	
+	// 取會員最近一筆訂單
+	public Orders findnewOrderByMember(int memberNo) {
+		return oRepo.findMaxOrderByMember(memberNo);
 	}
 	
 	

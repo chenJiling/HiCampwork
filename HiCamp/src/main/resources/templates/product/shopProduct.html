@@ -91,11 +91,12 @@
 
 								<div class="single-product-form"
 									style=" display: flex; justify-content: space-between; align-items: center;">
-									<form id="shoppingCartForm" th:action="@{/shoppingCart/memberCart}" method="get">
-										<input th:field="${product.productNo}" type="hidden">
+									<form id="shoppingCartForm">
+										<input th:field="${product.productNo}" name="productNo" type="hidden">
+										<input th:field="${product.productPrice}" name="productPrice" type="hidden">
 										<h5 style="font-family:monospace; color:#3b5d92; margin-right: 10px;align-items:center;"
 											class="single-product-pricing">選購數量:</h5>
-										<input type="number" placeholder="1" value="1" min="1"
+										<input type="number" placeholder="1" value="1" min="1" name="itemQuantity"
 											th:max="${product.productQuantity}" style="margin-right: 200px;">
 										<button id="shopping" class="btn btn-primary btn-lg cart-btn"
 											style="background-color: #3b5d92; border-color: #3b5d92; border-radius: 10px;"><i
@@ -181,15 +182,46 @@
 		<div th:replace="~{/layout/frontBottomBar}"></div>
 
 		<script>
-			var readMoreBtn = document.getElementsByClassName("readMoreBtn");
-
-			for (i = 0; i < readMoreBtn.length; i++) {
-				readMoreBtn[i].addEventListener('click', function (e) {
-					const actId = this.getAttribute('data-actId');
-					console.log('actId:' + actId);
-					window.location.href = "http://localhost:8080/HiCamp/activity/findByIdOnFrontpage?activityNo=" + actId;
-
-				});
+			//加入購物車
+			$('#shopping').click(function (e) {
+				e.preventDefault();
+				let cartform = document.getElementById('shoppingCartForm');
+				let cartData = new FormData(cartform);
+				addShoppingCart(cartData);
+			})
+			function addShoppingCart(cartData) {
+				axios({
+					url: 'http://localhost:8080/HiCamp/shoppingCart/addcart',
+					method: 'post',
+					data: cartData
+				})
+					.then(res => {
+						console.log('addcart gooddddd');
+					})
+					.catch(err => {
+						console.log('addcart err' + err);
+					})
+			}
+			//轉跳到購物車 立即購買
+			$('#shoppingCart').click(function (e) {
+				e.preventDefault();
+				let cartform = document.getElementById('shoppingCartForm');
+				let cartData = new FormData(cartform);
+				goTomemberCart(cartData);
+			})
+			function goTomemberCart(cartData) {
+				axios({
+					url: 'http://localhost:8080/HiCamp/shoppingCart/addcart',
+					method: 'post',
+					data: cartData
+				})
+					.then(res => {
+						console.log('addcart gooddddd');
+						window.location.href = 'http://localhost:8080/HiCamp/shoppingCart/memberCart'
+					})
+					.catch(err => {
+						console.log('addcart err' + err);
+					})
 			}
 		</script>
 		<script src="https://kit.fontawesome.com/a260a05f7c.js" crossorigin="anonymous"></script>

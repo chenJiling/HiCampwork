@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import tw.hicamp.member.model.Member;
 import tw.hicamp.member.service.MemberService;
 import tw.hicamp.product.model.CartDTO;
@@ -35,18 +36,27 @@ public class ShoppingCartController {
 	//新增購物車
 	@ResponseBody
 	@PostMapping("/shoppingCart/addcart")
-	public String addCart(@RequestParam("memberNo") int memberNo,
+	public String addCart(HttpSession session,
 						@RequestParam("productNo") int productNo,
 						@RequestParam("productPrice") int productPrice,
 						@RequestParam("itemQuantity") int itemQuantity) {
+//		Object memberNoObj = session.getAttribute("memberNo");
+//		if (memberNoObj != null) {
+//			int memberNo = (int)memberNoObj;
+		ShoppingCart cart = sCartService.findCartByProductNo(productNo,1);
 		
-		ShoppingCart newCart = new ShoppingCart();
-		newCart.setItemQuantity(itemQuantity);
-		newCart.setProductPrice(productPrice);
-		newCart.setMemberNo(memberNo);
-		newCart.setProductNo(productNo);
+		if (cart != null) {
+			sCartService.updateItemQuantity(cart, itemQuantity);
+		} else {
+			ShoppingCart newCart = new ShoppingCart();
+			newCart.setMemberNo(1);
+			newCart.setItemQuantity(itemQuantity);
+			newCart.setProductPrice(productPrice);
+			newCart.setProductNo(productNo);
+			sCartService.addCart(newCart);
+		}
 		
-		sCartService.addCart(newCart);
+//	}
 		return "新增購物車成功";
 		
 	}
@@ -63,9 +73,9 @@ public class ShoppingCartController {
 //		Object memberNoObj = session.getAttribute("memberNo");
 //		if (memberNoObj != null) {
 //			int memberNo = (int)memberNoObj;
-			List<ShoppingCart> memberCartList = sCartService.getMemberCart(6);
+			List<ShoppingCart> memberCartList = sCartService.getMemberCart(1);
 			List<CartDTO> cartDTOList = new ArrayList<>();
-			Member member = mService.findByNo(6);
+			Member member = mService.findByNo(1);
 			for(ShoppingCart aCart : memberCartList) {
 				Product product = pService.getProduct(aCart.getProductNo());
 				CartDTO cartDTO = new CartDTO();
@@ -87,5 +97,10 @@ public class ShoppingCartController {
 		
 		  return "product/shoppingCart";
 //		  return "取到";
+	}
+	
+	//生成訂單，刪除購物車
+	public boolean delCartByMemberNo(int memberNo) {
+		return sCartService.delcartByMemberNo(memberNo);
 	}
 }

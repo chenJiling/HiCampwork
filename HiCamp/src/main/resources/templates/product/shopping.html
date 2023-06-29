@@ -30,7 +30,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- end hero area -->
 
 	<!-- features list section -->
@@ -38,8 +38,8 @@
 		<div class="container">
 
 			<div style="display:flex;justify-content:center;align-items:center;">
-			
-					
+
+
 				<div>
 					<div class="list-box d-flex align-items-center">
 						<div class="list-icon">
@@ -51,8 +51,8 @@
 						</div>
 					</div>
 				</div>
-				
-				
+
+
 			</div>
 
 		</div>
@@ -72,33 +72,91 @@
 			</div>
 
 			<div class="row">
-			<th:block th:each="product : ${productList}">
-				<div class="col-lg-4 col-md-6 text-center">
-					<div class="single-product-item">
-						<div class="product-image">
-							<a th:href="'http://localhost:8080/HiCamp/shopping/shopProduct?productNo='+${product.productNo}"><img th:src="'http://localhost:8080/HiCamp/product/getBigPic?productNo='+${product.productNo}"
-                  ></a>
+				<th:block th:each="product : ${productList}">
+
+					<div class="col-lg-4 col-md-6 text-center">
+						<div class="single-product-item">
+							<form id="addCartForm">
+								<div class="product-image">
+									<a
+										th:href="'http://localhost:8080/HiCamp/shopping/shopProduct?productNo='+${product.productNo}"><img
+											th:src="'http://localhost:8080/HiCamp/product/getBigPic?productNo='+${product.productNo}"></a>
+								</div>
+								<span th:text=${product.productType}></span>
+								<h3 th:text=${product.productName}></h3>
+								<p class="product-price" th:text=${product.productPrice}></p>
+
+								<input th:value="${product.productNo}" id="productNo" type="hidden">
+								<input th:value="${product.productPrice}" id="productPrice" type="hidden">
+								<input value="1" id="itemQuantity" type="hidden">
+								<button th:data-id="${product.productNo}"
+									class="addCart btn btn-primary btn-lg cart-btn"
+									style="background-color: #ff8800; border-color: #ff8800; border-radius: 10px;"> <i
+										class="fas fa-shopping-cart"></i> Add to Cart</button>
+							</form>
 						</div>
-						<h3 th:text=${product.productName}></h3>
-						
-						<p class="product-price" th:text=${product.productPrice}><span th:text=${product.productType}></span></p>
-						商品庫存<h4 th:text=${product.productQuantity}></h4><a href="#" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
 					</div>
-				</div>
-			</th:block>
-				
+
+				</th:block>
+
 			</div>
 		</div>
 	</div>
 	<!-- end product section -->
-
-
-
-
-	
-
 	<div th:replace="~{/layout/frontBottomBar}"></div>
+	<script>
+		//加入購物車
+		$('.addCart').click(function (e) {
+			e.preventDefault();
+			let delCartID = $(this).attr('data-id');
+			console.log(delCartID);
+			let price = $('#productPrice').val();
+			console.log(price);
+			let itemQuantity = 1;
+			let Data = {
+				"productNo": delCartID,
+				"productPrice": price,
+				"itemQuantity": itemQuantity
+			}
+			addShoppingCart(Data);
+		})
+		function addShoppingCart(cartData) {
+			$.ajax({
+				url: 'http://localhost:8080/HiCamp/shoppingCart/addcart',
+				type: "post",
+				data: cartData,
+				success: function () {
+					Swal.fire({
+						position: 'top-center',
+						icon: 'success',
+						title: '加入購物車',
+						showConfirmButton: false,
+						timer: 1500
+					})
+				}
 
+			})
+
+			// axios({
+			// 	url: 'http://localhost:8080/HiCamp/shoppingCart/addcart',
+			// 	method: 'post',
+			// 	data: cartData
+			// })
+			// 	.then(res => {
+			// 		console.log('addcart gooddddd');
+			// 		Swal.fire({
+			// 			position: 'top-center',
+			// 			icon: 'success',
+			// 			title: '加入購物車',
+			// 			showConfirmButton: false,
+			// 			timer: 1500
+			// 		})
+			// 	})
+			// 	.catch(err => {
+			// 		console.log('addcart err' + err);
+			// 	})
+		}
+	</script>
 </body>
 
 </html>

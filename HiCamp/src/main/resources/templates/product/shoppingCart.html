@@ -73,7 +73,7 @@
 			</ol>
 		</nav>
 
-		<div class="container" style="width:60%;">
+		<div class="container" style="width:80%;">
 			<div class="row">
 				<table>
 					<thead>
@@ -91,6 +91,7 @@
 							<td>商品數量</td>
 							<td>單價</td>
 							<td>小計</td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody>
@@ -100,15 +101,18 @@
 								<td th:text="${cart.productName}"></td>
 								<td></td>
 								<td>
-									<input id="itemQuantity" name="itemQuantity" class="quantity form-control"
-										type="number" style="width:200px;" value="1" min="1"
-										th:max="${cart.productQuantity}">
+									<input id="itemQuantity" th:value="${cart.itemQuantity}"
+										class="quantity form-control" type="number" style="width:200px;" value="1"
+										min="1" th:max="${cart.productQuantity}">
 								</td>
 								<td>
 									<input th:value="${cart.productPrice}" id="productPrice" class="productPrice">
 								</td>
 								<td>
 									<input type="text" class="unit" th:value="${cart.productPrice}" style="width:100%;">
+								</td>
+								<td>
+									<button class="delBtn btn btn-outline-dark" th:data-id="${cart.cartId}">刪除</button>
 								</td>
 							</tr>
 						</th:block>
@@ -125,21 +129,21 @@
 							<li class="list-group-item">
 								<table>
 									<tr>
-										<td>會員姓名: <input type="hidden" id="memberName" th:value="${member.memberName}">
+										<td>會員姓名：<input type="hidden" id="memberName" th:value="${member.memberName}">
 										</td>
 										<td th:text="${member.memberName}"></td>
 									</tr>
 									<tr>
-										<td>電子信箱: </td>
+										<td>電子信箱：</td>
 										<td th:text="${member.memberEmail}"></td>
 									</tr>
 									<tr>
-										<td>電話: <input type="hidden" id="memberPhone" th:value="${member.memberPhone}">
+										<td>電話：<input type="hidden" id="memberPhone" th:value="${member.memberPhone}">
 										</td>
 										<td th:text="${member.memberPhone}"></td>
 									</tr>
 									<tr>
-										<td>地址: <input type="hidden" id="memberAddress"
+										<td>地址：<input type="hidden" id="memberAddress"
 												th:value="${member.memberAddress}">
 										</td>
 										<td th:text="${member.memberAddress}"></td>
@@ -150,7 +154,7 @@
 					</div>
 					<div class="card" style="width: 700px;">
 						<div class="card-header" style="display: flex; align-items: center;">
-							送貨資料 <span style="margin-left: 50px;"><input type="checkbox" id="thesame">同會員資料</span>
+							送貨資訊 <span style="margin-left: 50px;"><input type="checkbox" id="thesame">同會員資料</span>
 
 						</div>
 						<ul class="list-group list-group-flush">
@@ -159,11 +163,11 @@
 								<table>
 									<tr>
 										<td>收件者姓名：</td>
-										<td><input type="text" id="orderName"></td>
+										<td><input type="text" id="orderName" name="orderShipAddress"></td>
 									</tr>
 									<tr>
 										<td>電話：</td>
-										<td><input type="text" id="orderTel"></td>
+										<td><input type="text" id="orderTel" name=""></td>
 									</tr>
 									<tr>
 										<td>送貨地址：</td>
@@ -197,19 +201,48 @@
 					</ul>
 					<ul class="list-group list-group-flush">
 						<li class="list-group-item">
-							<table>
-								<tr>
-									<td><input type="checkbox">信用卡</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox">銀行轉帳</td>
-								</tr>
-							</table>
+							<fieldset class="row mb-3" style="font-size: 15px;">
+								<legend class="col-form-label col-sm-2 pt-0" style="width: 200px;">付款方式</legend>
+								<div class="col-sm-10">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1"
+											value="option1" checked>
+										<label class="form-check-label" for="gridRadios1">
+											銀行轉帳
+										</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2"
+											value="option2">
+										<label class="form-check-label" for="gridRadios2">
+											信用卡
+										</label>
+									</div>
+								</div>
+							</fieldset>
+
 						</li>
 					</ul>
+					<ul class="list-group list-group-flush">
+						<li class="list-group-item">
+							<fieldset class="row mb-3" style="font-size: 15px;">
+								<legend class="col-form-label col-sm-2 pt-0" style="width: 200px;">運送方式</legend>
+								<div class="col-sm-10">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" name="orderPayWay"
+											id="gridRadios1" value="option1" checked>
+										<label class="form-check-label" for="gridRadios1">
+											宅配
+										</label>
+									</div>
+								</div>
+							</fieldset>
+						</li>
+					</ul>
+
 					<ul class="list-group list-group-flush" style="justify-content: center; align-items: center;">
 						<li class="list-group-item">
-							<button class="btn btn-dark" style="width: 300px;">結帳</button>
+							<button class="btn btn-dark" style="width: 300px; margin-top: 20px;">產生訂單</button>
 						</li>
 					</ul>
 				</div>
@@ -248,7 +281,7 @@
 		<div th:replace="~{/layout/frontBottomBar}"></div>
 
 		<script>
-
+			//總額
 			let unitlist = document.querySelectorAll('.unit');
 			let total = 0;
 			unitlist.forEach(element => {
@@ -268,8 +301,17 @@
 				let sum = qua * price;
 				$(this).parent().next().next().children("input").val(sum);
 
-			})
+				let unitlist = document.querySelectorAll('.unit');
+				let total = 0;
+				unitlist.forEach(element => {
 
+					total += parseInt(element.value);
+				});
+				console.log(total);
+				$('#total').val(total);
+
+			})
+			//同訂購人
 			$('#thesame').click(function () {
 				let checked = $(this).prop('checked');
 				console.log(checked);
@@ -279,11 +321,26 @@
 				$('#orderAddr').val($('#memberAddress').val());
 
 			})
-
-			// $('#itemQuantity').change(function () {
-			// 	let number = Number($('#itemQuantity').val()) * Number($('#productPrice').val());
-			// 	$('#unit').attr({ 'value': number });
-			// })
+			//刪除購物車細項
+			$('.delBtn').click(function () {
+				let delCartID = $(this).attr('data-id');
+				console.log(delCartID);
+				delCartItem(delCartID);
+				$(this).parents('tr').remove();
+			})
+			function delCartItem(cartID) {
+				axios({
+					url: 'http://localhost:8080/HiCamp/shoppingCart/delCartItem',
+					method: 'post',
+					params: { cartId: cartID }
+				})
+					.then(res => {
+						console.log('delete goodddddd');
+					})
+					.catch(err => {
+						console.log('delete err' + err);
+					})
+			}
 
 		</script>
 		<!-- twzip -->

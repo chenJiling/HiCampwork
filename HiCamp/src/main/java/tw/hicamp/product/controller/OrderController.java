@@ -2,7 +2,13 @@ package tw.hicamp.product.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,14 +17,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
-import tw.hicamp.member.model.Member;
+import jakarta.servlet.http.HttpSession;
 import tw.hicamp.member.service.MemberService;
+import tw.hicamp.product.model.OrderItem;
 import tw.hicamp.product.model.Orders;
 import tw.hicamp.product.model.Product;
-import tw.hicamp.product.model.ProductPicture;
+import tw.hicamp.product.model.ShoppingCart;
 import tw.hicamp.product.service.OrdersService;
+import tw.hicamp.product.service.ProductService;
+import tw.hicamp.product.service.ShoppingCartService;
 
 @Controller
 public class OrderController {
@@ -27,6 +35,10 @@ public class OrderController {
 	private OrdersService oService;
 	@Autowired
 	private MemberService mService;
+	@Autowired
+	private ShoppingCartService sCartService;
+	@Autowired
+	private ProductService pService;
 
 	// 訂單後台主頁
 	@GetMapping("/orderHome")
@@ -36,40 +48,69 @@ public class OrderController {
 		return "product/orderHome";
 	}
 
-	// 新增訂單
+	// 新增訂單+訂單明細
 	@ResponseBody
 	@PostMapping("/product/addOrder")
-	public String addOrder(@RequestParam("memberNo") int memberNo,
-								@RequestParam("orderType") String orderType, 
-								@RequestParam("orderTotalAmount") int orderTotalAmount,
-								@RequestParam("orderStatus") String orderStatus,
-								@RequestParam("orderShipping") String orderShipping,
-								@RequestParam("orderPayWay") String orderPayWay,
-								@RequestParam("orderShipAddress") String orderShipAddress)
+	public String addOrder(HttpSession session, @RequestParam("orderName") String orderName,
+			@RequestParam("orderPhone") int orderPhone, @RequestParam("orderShipAddress") String orderShipAddress,
+			@RequestParam("orderMessage") String orderMessage, @RequestParam("orderTotalPrice") int orderTotalPrice,
+			@RequestParam("orderPayWay") String orderPayWay, @RequestParam("orderShipping") String orderShipping, 
+			@RequestParam("orderStatus") String orderStatus)
 			throws IOException {
-		
-		Member member = mService.findByNo(memberNo);
-		List<Orders> newOrder = new ArrayList<>();
-		
-		Orders order = new Orders();
-		order.setOrderType(orderType);
-		order.setOrderTotalAmount(orderTotalAmount);
-		order.setOrderStatus(orderStatus);
-		order.setOrderShipping(orderShipping);
-		order.setOrderPayWay(orderPayWay);
-		order.setOrderShipAddress(orderShipAddress);
-		
-		newOrder.add(order);
-		member.setOrders(newOrder);
-		oService.addOrder(order);
-		
-		return "加入訂單成功"; 
+
+		Object memberNoObj = session.getAttribute("memberNo");
+		if (memberNoObj != null) {
+			int memberNo = (int) memberNoObj;
+			// 取得當前時間
+//			DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy ',' HH:mm:ss");
+//			Date date = dateFormat.format(Calendar.getInstance().getTime());
+			Date date = (Date) Date.from(Instant.now());
+
+			Orders order = new Orders();
+			order.setOrderDate(date);
+			order.setOrderName(orderShipAddress);
+			order.setOrderPhone(orderPhone);
+			order.setOrderShipAddress(orderShipAddress);
+			order.setOrderMessage(orderMessage);
+			order.setOrderTotalPrice(orderTotalPrice);
+			order.setOrderPayWay(orderPayWay);
+			order.setOrderShipping(orderShipping);
+			order.setOrderStatus("正常");
+			oService.addOrder(order);
+			
+			List<ShoppingCart> memberCart = sCartService.getMemberCart(memberNo);
+			ArrayList<OrderItem> newItemList = new ArrayList<>();
+			for (ShoppingCart shoppingCart : memberCart) {
+				OrderItem newitem = new OrderItem();
+				newitem.setUnitPrice(shoppingCart.getProductPrice());
+				newitem.setItemQuantity(shoppingCart.getItemQuantity());
+				
+				Product productItem = pService.getProduct(shoppingCart.getProductNo());
+				newitem.setProductNo(productItem.getProductNo());
+				
+				
+				newItemList.add(newitem);
+			}
+			
+			Orders newOrder = oService.findnewOrderByMember(memberNo);
+			
+			
+			
+			
+			
+			
+			
+			oService.findnewOrderByMember(memberNo);
+			
+		}
+
+		return "加入訂單成功";
 	}
+
 	// 更改訂單狀態
 	@PostMapping("/product/updateStutas")
 	public boolean updateOrderStutas(int orderNo, String stutas) {
 		return oService.updateOrderStutas(orderNo, stutas);
 	}
-
 
 }
