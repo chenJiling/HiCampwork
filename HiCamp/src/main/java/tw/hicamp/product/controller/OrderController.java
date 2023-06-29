@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.sql.Date;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import jakarta.servlet.http.HttpSession;
+import tw.hicamp.member.model.Member;
 import tw.hicamp.member.service.MemberService;
 import tw.hicamp.product.model.OrderItem;
 import tw.hicamp.product.model.Orders;
@@ -50,7 +52,7 @@ public class OrderController {
 
 	// 新增訂單+訂單明細
 	@ResponseBody
-	@PostMapping("/product/addOrder")
+	@PostMapping("/orders/addOrder")
 	public String addOrder(HttpSession session, @RequestParam("orderName") String orderName,
 			@RequestParam("orderPhone") int orderPhone, @RequestParam("orderShipAddress") String orderShipAddress,
 			@RequestParam("orderMessage") String orderMessage, @RequestParam("orderTotalPrice") int orderTotalPrice,
@@ -58,17 +60,20 @@ public class OrderController {
 			@RequestParam("orderStatus") String orderStatus)
 			throws IOException {
 
-		Object memberNoObj = session.getAttribute("memberNo");
-		if (memberNoObj != null) {
-			int memberNo = (int) memberNoObj;
+//		Object memberNoObj = session.getAttribute("memberNo");
+//		if (memberNoObj != null) {
+//			int memberNo = (int) memberNoObj;
 			// 取得當前時間
 //			DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy ',' HH:mm:ss");
 //			Date date = dateFormat.format(Calendar.getInstance().getTime());
-			Date date = (Date) Date.from(Instant.now());
+			Date date = new java.sql.Date(new java.util.Date().getTime());
 
+			Member member = mService.findByNo(1);
+			
+			ArrayList<Orders> orderslist = new ArrayList<>();
 			Orders order = new Orders();
 			order.setOrderDate(date);
-			order.setOrderName(orderShipAddress);
+			order.setOrderName(orderName);
 			order.setOrderPhone(orderPhone);
 			order.setOrderShipAddress(orderShipAddress);
 			order.setOrderMessage(orderMessage);
@@ -76,33 +81,26 @@ public class OrderController {
 			order.setOrderPayWay(orderPayWay);
 			order.setOrderShipping(orderShipping);
 			order.setOrderStatus("正常");
+			order.setMember(member);
+			orderslist.add(order);
+			member.setOrders(orderslist);
+			
 			oService.addOrder(order);
 			
-			List<ShoppingCart> memberCart = sCartService.getMemberCart(memberNo);
+			Orders neworder = oService.findnewOrderByMember(1);
+			
+			List<ShoppingCart> memberCart = sCartService.getMemberCart(1);
+			
 			ArrayList<OrderItem> newItemList = new ArrayList<>();
 			for (ShoppingCart shoppingCart : memberCart) {
 				OrderItem newitem = new OrderItem();
 				newitem.setUnitPrice(shoppingCart.getProductPrice());
 				newitem.setItemQuantity(shoppingCart.getItemQuantity());
-				
-				Product productItem = pService.getProduct(shoppingCart.getProductNo());
-				newitem.setProductNo(productItem.getProductNo());
-				
-				
+				newitem.setProductNo(shoppingCart.getProductNo());
 				newItemList.add(newitem);
 			}
-			
-			Orders newOrder = oService.findnewOrderByMember(memberNo);
-			
-			
-			
-			
-			
-			
-			
-			oService.findnewOrderByMember(memberNo);
-			
-		}
+			neworder.setOrderItems(newItemList);
+//		}
 
 		return "加入訂單成功";
 	}

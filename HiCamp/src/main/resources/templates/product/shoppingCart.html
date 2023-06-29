@@ -335,6 +335,14 @@
 					params: { cartId: cartID }
 				})
 					.then(res => {
+						let unitlist = document.querySelectorAll('.unit');
+						let total = 0;
+						unitlist.forEach(element => {
+
+							total += parseInt(element.value);
+						});
+						console.log(total);
+						$('#total').val(total);
 						console.log('delete goodddddd');
 					})
 					.catch(err => {
