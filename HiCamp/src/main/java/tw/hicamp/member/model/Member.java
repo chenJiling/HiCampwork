@@ -2,6 +2,7 @@ package tw.hicamp.member.model;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +60,17 @@ public class Member {
 	@JsonIgnoreProperties("member")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Orders> orders = new ArrayList<>();
+
+	@Override
+	public String toString() {
+		return "Member [memberNo=" + memberNo + ", memberName=" + memberName + ", memberGender=" + memberGender
+				+ ", memberEmail=" + memberEmail + ", memberPassword=" + memberPassword + ", memberPhone=" + memberPhone
+				+ ", memberAddress=" + memberAddress + ", memberId=" + memberId + ", memberBirthday=" + memberBirthday
+				+ ", memberEmergencyContact=" + memberEmergencyContact + ", memberEmergencyPhone="
+				+ memberEmergencyPhone + ", memberStatus=" + memberStatus + ", memberPhoto="
+				+ Arrays.toString(memberPhoto) + ", posts=" + posts + ", postcomments=" + postcomments + ", orders="
+				+ orders + "]";
+	}
 	
 	
 }

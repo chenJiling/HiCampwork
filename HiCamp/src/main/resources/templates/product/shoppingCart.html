@@ -102,14 +102,15 @@
 								<td></td>
 								<td>
 									<input id="itemQuantity" th:value="${cart.itemQuantity}"
-										class="quantity form-control" type="number" style="width:200px;" value="1"
-										min="1" th:max="${cart.productQuantity}">
+										class="quantity form-control" th:data-id="${cart.cartId}" type="number"
+										style="width:200px;" value="1" min="1" th:max="${cart.productQuantity}">
 								</td>
 								<td>
 									<input th:value="${cart.productPrice}" id="productPrice" class="productPrice">
 								</td>
 								<td>
-									<input type="text" class="unit" th:value="${cart.productPrice}" style="width:100%;">
+									<input type="text" class="unit"
+										th:value="${cart.productPrice} * ${cart.productQuantity}" style="width:100%;">
 								</td>
 								<td>
 									<button class="delBtn btn btn-outline-dark" th:data-id="${cart.cartId}">刪除</button>
@@ -167,11 +168,12 @@
 									</tr>
 									<tr>
 										<td>電話：</td>
-										<td><input type="text" id="orderTel" name=""></td>
+										<td><input type="text" id="orderPhone" name="orderPhone"></td>
 									</tr>
 									<tr>
 										<td>送貨地址：</td>
-										<td><input type="text" id="orderAddr" style="width: 100%;"></td>
+										<td><input type="text" id="orderShipAddress" name="orderShipAddress"
+												style="width: 100%;"></td>
 									</tr>
 									<tr>
 										<td>訂單備註：</td>
@@ -195,7 +197,8 @@
 								<div style="margin-right: 30px;">
 									<h3>Total price</h3>
 								</div>
-								<div><input type="text" id="total" style=" width:100px;" readonly></div>
+								<div><input type="text" id="orderTotalPrice" name="orderTotalPrice"
+										style=" width:100px;" readonly></div>
 							</div>
 						</li>
 					</ul>
@@ -205,15 +208,15 @@
 								<legend class="col-form-label col-sm-2 pt-0" style="width: 200px;">付款方式</legend>
 								<div class="col-sm-10">
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1"
-											value="option1" checked>
+										<input class="form-check-input" type="radio" name="orderPayWay" id="orderPayWay"
+											value="銀行轉帳" checked>
 										<label class="form-check-label" for="gridRadios1">
 											銀行轉帳
 										</label>
 									</div>
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2"
-											value="option2">
+										<input class="form-check-input" type="radio" name="orderPayWay" id="orderPayWay"
+											value="信用卡">
 										<label class="form-check-label" for="gridRadios2">
 											信用卡
 										</label>
@@ -229,8 +232,8 @@
 								<legend class="col-form-label col-sm-2 pt-0" style="width: 200px;">運送方式</legend>
 								<div class="col-sm-10">
 									<div class="form-check">
-										<input class="form-check-input" type="checkbox" name="orderPayWay"
-											id="gridRadios1" value="option1" checked>
+										<input class="form-check-input" type="checkbox" name="orderShipping"
+											id="orderShipping" value="宅配" checked>
 										<label class="form-check-label" for="gridRadios1">
 											宅配
 										</label>
@@ -242,7 +245,8 @@
 
 					<ul class="list-group list-group-flush" style="justify-content: center; align-items: center;">
 						<li class="list-group-item">
-							<button class="btn btn-dark" style="width: 300px; margin-top: 20px;">產生訂單</button>
+							<button id="addOrder" class="btn btn-dark"
+								style="width: 300px; margin-top: 20px;">產生訂單</button>
 						</li>
 					</ul>
 				</div>
@@ -281,74 +285,116 @@
 		<div th:replace="~{/layout/frontBottomBar}"></div>
 
 		<script>
-			//總額
-			let unitlist = document.querySelectorAll('.unit');
-			let total = 0;
-			unitlist.forEach(element => {
+			$(function () {
+				totalPriceCal();
 
-				total += parseInt(element.value);
-			});
-			console.log(total);
-			$('#total').val(total);
+				//總額
+				function totalPriceCal() {
+					let unitlist = document.querySelectorAll('.unit');
+					let total = 0;
+					unitlist.forEach(element => {
+						total += parseInt(element.value);
+					});
+					console.log(total);
+					$('#orderTotalPrice').val(total);
+				}
 
-
-			//小計
-			$('.quantity').change(function () {
-				let qua = $(this).val();
-				let price = $(this).parent().next().children("input").val();
-				// let price = $('.productPrice').val();
-				console.log(price);
-				let sum = qua * price;
-				$(this).parent().next().next().children("input").val(sum);
-
-				let unitlist = document.querySelectorAll('.unit');
-				let total = 0;
-				unitlist.forEach(element => {
-
-					total += parseInt(element.value);
-				});
-				console.log(total);
-				$('#total').val(total);
-
-			})
-			//同訂購人
-			$('#thesame').click(function () {
-				let checked = $(this).prop('checked');
-				console.log(checked);
-				console.log($('#memberName').val());
-				$('#orderName').val($('#memberName').val());
-				$('#orderTel').val($('#memberPhone').val());
-				$('#orderAddr').val($('#memberAddress').val());
-
-			})
-			//刪除購物車細項
-			$('.delBtn').click(function () {
-				let delCartID = $(this).attr('data-id');
-				console.log(delCartID);
-				delCartItem(delCartID);
-				$(this).parents('tr').remove();
-			})
-			function delCartItem(cartID) {
-				axios({
-					url: 'http://localhost:8080/HiCamp/shoppingCart/delCartItem',
-					method: 'post',
-					params: { cartId: cartID }
+				//小計
+				$('.quantity').change(function () {
+					let qua = $(this).val();
+					let price = $(this).parent().next().children("input").val();
+					// let price = $('.productPrice').val();
+					console.log(price);
+					let sum = qua * price;
+					$(this).parent().next().next().children("input").val(sum);
+					let cartID = $(this).attr('data-id');
+					let updateQData = {
+						"cartId": cartID,
+						"itemQuantity": qua
+					}
+					totalPriceCal();
+					setQuantity(updateQData);
 				})
-					.then(res => {
-						let unitlist = document.querySelectorAll('.unit');
-						let total = 0;
-						unitlist.forEach(element => {
+				function setQuantity(setQuantityData) {
+					$.ajax({
+						url: 'http://localhost:8080/HiCamp/shoppingCart/setQuantity',
+						type: "post",
+						data: setQuantityData,
+						success: function () {
+							console.log(' 修改成功');
+						}
 
-							total += parseInt(element.value);
-						});
-						console.log(total);
-						$('#total').val(total);
-						console.log('delete goodddddd');
 					})
-					.catch(err => {
-						console.log('delete err' + err);
+
+				}
+				//同訂購人
+				$('#thesame').click(function () {
+					let checked = $(this).prop('checked');
+					console.log(checked);
+					console.log($('#memberName').val());
+					$('#orderName').val($('#memberName').val());
+					$('#orderPhone').val($('#memberPhone').val());
+					$('#orderShipAddress').val($('#memberAddress').val());
+
+				})
+
+				//刪除購物車細項
+				$('.delBtn').click(function () {
+					let delCartID = $(this).attr('data-id');
+					console.log(delCartID);
+					delCartItem(delCartID);
+					$(this).parents('tr').remove();
+				})
+				function delCartItem(cartID) {
+					axios({
+						url: 'http://localhost:8080/HiCamp/shoppingCart/delCartItem',
+						method: 'post',
+						params: { cartId: cartID }
 					})
-			}
+						.then(res => {
+							totalPriceCal();
+							console.log('delete goodddddd');
+						})
+						.catch(err => {
+							console.log('delete err' + err);
+						})
+				}
+
+				//產生訂單明細
+				$('#addOrder').click(function () {
+					let orderName = $('#orderName').val();
+					let orderPhone = $('#orderPhone').val();
+					let orderShipAddress = $('#orderShipAddress').val();
+					let orderMessage = $('#orderMessage').val();
+					let orderTotalPrice = $('#orderTotalPrice').val();
+					let orderPayWay = $('input[name=orderPayWay]:checked').val();
+					let orderShipping = $('#orderShipping').val();
+					let addOrderData = {
+						"orderName": orderName,
+						"orderPhone": orderPhone,
+						"orderShipAddress": orderShipAddress,
+						"orderMessage": orderMessage,
+						"orderTotalPrice": orderTotalPrice,
+						"orderTotalPrice": orderTotalPrice,
+						"orderPayWay": orderPayWay,
+						"orderShipping": orderShipping
+					}
+					console.log(addOrderData);
+					addOrderAjax(addOrderData);
+				})
+				function addOrderAjax(addOrderData) {
+					$.ajax({
+						url: 'http://localhost:8080/HiCamp/orders/addOrder',
+						type: "post",
+						data: addOrderData,
+						success: function () {
+							console.log(' 新增訂單成功');
+							// window.location.href = "http://localhost:8080/HiCamp/orders/getOrder";
+						}
+
+					})
+				}
+			})
 
 		</script>
 		<!-- twzip -->

@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
-	@Query(value = "select * from orders where memberNo = :memberNo and orderDate = (select MAX(orderDate) from orders)", nativeQuery = true)
-	Orders findMaxOrderByMember(@Param("memberNo") int memberNo);
+	@Query(value = "select top (1) * from orders where memberNo= :memberNo order by orderDate DESC", nativeQuery = true)
+	Orders findlastOrderByMember(@Param("memberNo") int memberNo);
 	
 }

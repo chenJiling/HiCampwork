@@ -11,6 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import tw.hicamp.member.model.Member;
+import tw.hicamp.member.model.MemberRepository;
 import tw.hicamp.product.model.OrderItem;
 import tw.hicamp.product.model.Orders;
 import tw.hicamp.product.model.OrdersRepository;
@@ -21,6 +23,8 @@ public class OrdersService {
 
 	@Autowired
 	private OrdersRepository oRepo;
+	@Autowired
+	public MemberRepository mRepo;
 
 	// 新增一筆訂單
 	public Orders addOrder(Orders order) {
@@ -60,7 +64,7 @@ public class OrdersService {
 	
 	// 取會員最近一筆訂單
 	public Orders findnewOrderByMember(int memberNo) {
-		return oRepo.findMaxOrderByMember(memberNo);
+		return oRepo.findlastOrderByMember(memberNo);
 	}
 	
 	
@@ -70,6 +74,10 @@ public class OrdersService {
 		Page<Orders> page = oRepo.findAll(pgb);
 		
 		return page;
+	}
+	
+	public Member addmemberOder(Member member) {
+		return mRepo.save(member);
 	}
 
 }
