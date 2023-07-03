@@ -11,7 +11,7 @@ public class OrderDTO {
 	private String memberEmail;
 	private String memberPhone;
 	
-	private Date orderDate;
+	private String orderDate;
 	private String orderName;
 	private String orderPhone;
 	private String orderShipAddress;
