@@ -34,12 +34,13 @@
 	<link rel="stylesheet" href="assets/css/responsive.css">
 	<style>
 		.detail {
-			border: 1px solid #000;
+			/*order: 1px solid #000;*/
 			font-family: 微軟正黑體;
-			font-size: 20px;
-			width: 1200px;
-			border: 1px solid #000;
+			font-size: 16px;
+			width: 100%;
 			text-align: center;
+			align-items: center;
+			justify-content: center;
 			/* border-collapse: collapse; */
 		}
 
@@ -86,8 +87,9 @@
 		</nav>
 
 		<div class="container">
-			<div style="display: flex;justify-content: center;">
-				<div class="card" style="width: 500px;">
+			<div
+				style="display: flex;justify-content: space-around; width:1200px; margin-bottom: 50px;font-size: 15px;">
+				<div class="card" style="width: 550px;">
 					<div class="card-header">
 						訂購資訊
 					</div>
@@ -95,34 +97,40 @@
 						<li class="list-group-item">
 							<table>
 								<tr>
-									<td>訂購人：</td>
+									<td>訂購人</td>
+									<td>：</td>
 									<td th:text="${orderDTO.memberName}">訂購人</td>
 								</tr>
 								<tr>
-									<td>訂購人email：</td>
+									<td>訂購人email</td>
+									<td>：</td>
 									<td th:text="${orderDTO.memberEmail}">訂購人email</td>
 								</tr>
 								<tr>
-									<td>訂購人電話：</td>
+									<td>訂購人電話</td>
+									<td>：</td>
 									<td th:text="${orderDTO.memberPhone}">訂購人phone</td>
 								</tr>
 								<tr>
-									<td>訂購日期：</td>
+									<td>訂購日期</td>
+									<td>：</td>
 									<td th:text="${orderDTO.orderDate}">訂購日期</td>
 								</tr>
 								<tr>
-									<td>總金額：</td>
+									<td>總金額</td>
+									<td>：</td>
 									<td th:text="'$ ' +${orderDTO.orderTotalPrice}">getOrderTotalPrice</td>
 								</tr>
 								<tr>
-									<td>付款方式：</td>
+									<td>付款方式</td>
+									<td>：</td>
 									<td th:text="${orderDTO.orderPayWay}">getOrderPayWay</td>
 								</tr>
 							</table>
 						</li>
 					</ul>
 				</div>
-				<div class="card" style="width: 500px;">
+				<div class="card" style="width: 550px;">
 					<div class="card-header">
 						收貨資訊
 					</div>
@@ -131,49 +139,67 @@
 							<table>
 								<tr>
 									<td>收貨人</td>
+									<td>：</td>
 									<td th:text="${orderDTO.orderName}">收貨人</td>
 								</tr>
 								<tr>
 									<td>收貨人電話</td>
+									<td>：</td>
 									<td th:text="${orderDTO.orderPhone}">收貨人電話</td>
 								</tr>
 								<tr>
 									<td>送貨地址</td>
+									<td>：</td>
 									<td th:text="${orderDTO.orderShipAddress}">getOrderShipAddress</td>
 								</tr>
 								<tr>
 									<td>備註</td>
+									<td>：</td>
 									<td th:text="${orderDTO.orderMessage}">getOrderMessage</td>
 								</tr>
 							</table>
+						</li>
+						<li class="list-group-item">
+							<button id="submit" type="submit" class="btn btn-outline-dark"
+								style="float: right; margin: 10px; width: 100px;">結帳</button>
 						</li>
 					</ul>
 				</div>
 			</div>
 
-			<table class="detail">
-				<thead>
-					<tr>
-						<td colspan="4" style="background-color: lightgray;">訂購明細</td>
-					</tr>
-					<tr>
-						<td>購買商品</td>
-						<td>數量</td>
-						<td>單價</td>
-						<td>小計</td>
-					</tr>
-				</thead>
-				<tbody>
-					<th:block th:each="itemDTO : ${orderDTO.orderItemDTO}">
-						<tr>
-							<td th:text="${itemDTO.productName}">ProductName</td>
-							<td th:text="${itemDTO.itemQuantity}">ItemQuantity</td>
-							<td th:text="'$ ' +${itemDTO.unitPrice}">getUnitPrice</td>
-							<td th:text="'$ ' +${itemDTO.unitPrice} * ${itemDTO.itemQuantity}">小計</td>
-						</tr>
-					</th:block>
-				</tbody>
-			</table>
+
+
+			<div class="card" style="width: 1200px;">
+				<div class="card-header">
+					訂購明細
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						<table class="detail">
+							<thead>
+								<tr>
+									<td>購買商品</td>
+									<td>數量</td>
+									<td>單價</td>
+									<td>小計</td>
+								</tr>
+							</thead>
+							<tbody>
+								<th:block th:each="itemDTO : ${orderDTO.orderItemDTO}">
+									<tr>
+										<td th:text="${itemDTO.productName}">ProductName</td>
+										<td th:text="${itemDTO.itemQuantity}">ItemQuantity</td>
+										<td th:text="'$ ' +${itemDTO.unitPrice}">getUnitPrice</td>
+										<td th:text="'$ ' +${itemDTO.unitPrice} * ${itemDTO.itemQuantity}">小計</td>
+									</tr>
+								</th:block>
+							</tbody>
+						</table>
+					</li>
+				</ul>
+			</div>
+			<a href=""></a>
+
 		</div>
 		<!-- end latest news -->
 

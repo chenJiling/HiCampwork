@@ -1,6 +1,7 @@
 package tw.hicamp.product.controller;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.*;
 import java.text.*;
 
@@ -155,9 +156,14 @@ public class OrderController {
 	}
 
 	// 更改訂單狀態
-	@PostMapping("/product/updateStutas")
+	@PostMapping("/orders/updateStutas")
 	public boolean updateOrderStutas(int orderNo, String stutas) {
 		return oService.updateOrderStutas(orderNo, stutas);
+	}
+	//ECsucc
+	@PostMapping("/product/ECsucc")
+	public String ectest() {
+		return "product/ECpaySucc";
 	}
 
 }
