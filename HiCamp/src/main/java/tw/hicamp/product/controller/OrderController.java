@@ -165,5 +165,17 @@ public class OrderController {
 	public String ectest() {
 		return "product/ECpaySucc";
 	}
+	//進入分析圖表
+	@GetMapping("/orders/productAnalysis")
+	public String goAnalysis() {
+		return "product/productAnalysis";
+	}
+	
+	//分析圖表
+	@ResponseBody
+	@GetMapping("/orders/analysis")
+	public List<Map<Integer, Integer>> getAnalysis(Model model) {
+		return oService.getAnalysisService();
+	}
 
 }

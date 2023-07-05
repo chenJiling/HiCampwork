@@ -1,6 +1,7 @@
 package tw.hicamp.product.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +79,11 @@ public class OrdersService {
 	
 	public Member addmemberOder(Member member) {
 		return mRepo.save(member);
+	}
+	
+	// 分析月份金額
+	public List<Map<Integer, Integer>> getAnalysisService(){
+		return oRepo.findsumPriceGroupBymonth();
 	}
 
 }

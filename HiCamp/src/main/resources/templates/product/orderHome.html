@@ -41,10 +41,10 @@
             <div class="row column_title">
               <div class="col-md-12">
                 <div class="page_title" style="display: flex; align-items: center;">
-                  <h2>商品管理</h2><!-- 這裡不要忘了換 -->
-                  <button class="create btn btn-outline-danger btn-lg" data-bs-toggle="modal"
+                  <h2>訂單管理</h2><!-- 這裡不要忘了換 -->
+                  <!-- <button class="create btn btn-outline-danger btn-lg" data-bs-toggle="modal"
                     data-bs-target="#exampleModal" style="margin-left: 50px">
-                    新增商品</button>
+                    新增商品</button> -->
                 </div>
               </div>
             </div>
@@ -54,26 +54,24 @@
               <table id="example" class="hover" style="width: 100%; font-size: 20px;">
                 <thead>
                   <tr>
-                    <th>商品編號</th>
-                    <th>商品分類</th>
-                    <th>商品名稱</th>
-                    <th>金額</th>
-                    <th>數量</th>
-                    <th>狀態</th>
-                    <th>編輯</th>
+                    <th>訂單編號</th>orderNo
+                    <th>會員編號</th>memberNo
+                    <th>訂單日期</th>orderDate
+                    <th>訂單金額</th>orderTotalPrice
+                    <th>付款狀態</th>orderStatus
+                    <th>查看</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <th:block th:each="product : ${products}">
+                  <th:block th:each="order : ${allOrders}">
                     <tr>
-                      <td th:text="${product.productNo}"></td>
-                      <td th:text="${product.productType}"></td>
-                      <td th:text="${product.productName}"></td>
-                      <td th:text="${product.productPrice}"></td>
-                      <td th:text="${product.productQuantity}"></td>
-                      <td th:text="${product.productStutas}"></td>
-                      <form th:action="@{/product/aProduct}" method="get">
-                        <input name="productNo" th:value="${product.productNo}" type="hidden">
+                      <td th:text="${order.orderNo}"></td>
+                      <td th:text="${order.memberNo}"></td>
+                      <td th:text="${order.orderDate}"></td>
+                      <td th:text="${order.orderTotalPrice}"></td>
+                      <td th:text="${order.orderStatus}"></td>
+                      <form th:action="@{/order/getOrder}" method="get">
+                        <input name="orderNo" th:value="${order.orderNo}" type="hidden">
                         <td><button class="btn btn-sm edit">編輯</button></td>
                       </form>
                     </tr>
@@ -81,13 +79,12 @@
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th>商品編號</th>
-                    <th>商品分類</th>
-                    <th>商品名稱</th>
-                    <th>金額</th>
-                    <th>數量</th>
-                    <th>狀態</th>
-                    <th>編輯</th>
+                    <th>訂單編號</th>orderNo
+                    <th>會員編號</th>memberNo
+                    <th>訂單日期</th>orderDate
+                    <th>訂單金額</th>orderTotalPrice
+                    <th>付款狀態</th>orderStatus
+                    <th>查看</th>
                   </tr>
                 </tfoot>
               </table>
