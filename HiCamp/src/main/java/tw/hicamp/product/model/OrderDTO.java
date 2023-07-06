@@ -11,6 +11,7 @@ public class OrderDTO {
 	private String memberEmail;
 	private String memberPhone;
 	
+	private int orderNo;
 	private String orderDate;
 	private String orderName;
 	private String orderPhone;
@@ -19,6 +20,7 @@ public class OrderDTO {
 	private int orderTotalPrice;
 	private String orderPayWay;
 	private String orderShipping;
+	private String orderStatus;
 	
 	private List<OrderItemDTO> orderItemDTO;
 	

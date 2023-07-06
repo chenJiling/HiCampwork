@@ -45,7 +45,22 @@ public class OrderController {
 	@GetMapping("/orderHome")
 	public String getAllOrders(Model m) {
 		List<Orders> allOrders = oService.getAllOrders();
-		m.addAttribute("allOrders", allOrders);
+		
+		List<OrderDTO> orderDTOs = new ArrayList<>();
+		for (Orders order : allOrders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setMemberName(order.getMember().getMemberName());
+			
+			SimpleDateFormat ft = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			String orserDate = ft.format(order.getOrderDate()).toString();
+			orderDTO.setOrderDate(orserDate);
+			orderDTO.setOrderNo(order.getOrderNo());
+			orderDTO.setOrderTotalPrice(order.getOrderTotalPrice());
+			orderDTO.setOrderStatus(order.getOrderStatus());
+			orderDTOs.add(orderDTO);
+		}
+		
+		m.addAttribute("orderDTOs", orderDTOs);
 		return "product/orderHome";
 	}
 
@@ -77,7 +92,7 @@ public class OrderController {
 		order.setOrderTotalPrice(orderTotalPrice);
 		order.setOrderPayWay(orderPayWay);
 		order.setOrderShipping(orderShipping);
-		order.setOrderStatus("ok");
+		order.setOrderStatus("未付款");
 		order.setMember(member);
 		orderslist.add(order);
 		member.setOrders(orderslist);
