@@ -10,8 +10,12 @@ import ecpay.payment.integration.domain.AioCheckOutALL;
 @Service
 public class ECPayPaymentAPIService {
 	
-public String ecpayCheckout(String orderDate, String totalPrice, String itemName) {
+	
+public String ecpayCheckout(String orderDate, String totalPrice, String itemName, int orderNo) {
+	
 		String uuId = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
+		
+	
 		AllInOne all = new AllInOne("");
 		AioCheckOutALL obj = new AioCheckOutALL();
 		obj.setMerchantTradeNo("2023" + "hicamp" + uuId);
@@ -24,6 +28,7 @@ public String ecpayCheckout(String orderDate, String totalPrice, String itemName
 		obj.setNeedExtraPaidInfo("N");
         // 商店轉跳網址 (Optional)
         obj.setClientBackURL("http://localhost:8080/HiCamp/shopping");
+        obj.setOrderResultURL("http://localhost:8080/HiCamp/orders/ECsucc?order="+ orderNo);
 		String form = all.aioCheckOut(obj, null);
 		
 		return form;

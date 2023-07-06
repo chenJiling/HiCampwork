@@ -1,4 +1,4 @@
-package tw.hicamp.product.service;
+package tw.hicamp.product.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -13,6 +13,9 @@ import jakarta.servlet.http.HttpSession;
 import tw.hicamp.product.model.OrderItem;
 import tw.hicamp.product.model.Orders;
 import tw.hicamp.product.model.Product;
+import tw.hicamp.product.service.ECPayPaymentAPIService;
+import tw.hicamp.product.service.OrdersService;
+import tw.hicamp.product.service.ProductService;
 
 @RestController
 public class ECPayPaymentAPIController {
@@ -48,7 +51,7 @@ public class ECPayPaymentAPIController {
 		
 		String productNames = productNameJoiner.toString();
 		
-		String aioCheckOutALLForm = payService.ecpayCheckout(payDate, totalPrice, productNames);
+		String aioCheckOutALLForm = payService.ecpayCheckout(payDate, totalPrice, productNames, memberNewOrder.getOrderNo());
 		
 		return aioCheckOutALLForm;
 	}

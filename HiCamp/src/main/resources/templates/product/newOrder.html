@@ -160,8 +160,10 @@
 							</table>
 						</li>
 						<li class="list-group-item">
-							<button id="submit" type="submit" class="btn btn-outline-dark"
-								style="float: right; margin: 10px; width: 100px;">結帳</button>
+							<form th:action="@{/ecpayCheckout}" method="post">
+								<button id="submit" type="submit" class="btn btn-outline-dark"
+									style="float: right; margin: 10px; width: 100px;">結帳</button>
+							</form>
 						</li>
 					</ul>
 				</div>
