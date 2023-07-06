@@ -90,7 +90,7 @@
             let month = [];
             let count = [];
             response.forEach(function (data, index) {
-              month.push(data.month);
+              month.push(data.month + ' 月');
               count.push(data.sumPrice);
             })
             console.log(month);

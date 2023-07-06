@@ -45,7 +45,22 @@ public class OrderController {
 	@GetMapping("/orderHome")
 	public String getAllOrders(Model m) {
 		List<Orders> allOrders = oService.getAllOrders();
-		m.addAttribute("allOrders", allOrders);
+		
+		List<OrderDTO> orderDTOs = new ArrayList<>();
+		for (Orders order : allOrders) {
+			OrderDTO orderDTO = new OrderDTO();
+			orderDTO.setMemberName(order.getMember().getMemberName());
+			
+			SimpleDateFormat ft = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			String orserDate = ft.format(order.getOrderDate()).toString();
+			orderDTO.setOrderDate(orserDate);
+			orderDTO.setOrderNo(order.getOrderNo());
+			orderDTO.setOrderTotalPrice(order.getOrderTotalPrice());
+			orderDTO.setOrderStatus(order.getOrderStatus());
+			orderDTOs.add(orderDTO);
+		}
+		
+		m.addAttribute("orderDTOs", orderDTOs);
 		return "product/orderHome";
 	}
 
@@ -77,7 +92,7 @@ public class OrderController {
 		order.setOrderTotalPrice(orderTotalPrice);
 		order.setOrderPayWay(orderPayWay);
 		order.setOrderShipping(orderShipping);
-		order.setOrderStatus("ok");
+		order.setOrderStatus("未付款");
 		order.setMember(member);
 		orderslist.add(order);
 		member.setOrders(orderslist);
@@ -161,8 +176,53 @@ public class OrderController {
 		return oService.updateOrderStutas(orderNo, stutas);
 	}
 	//ECsucc
-	@PostMapping("/product/ECsucc")
-	public String ectest() {
+	@PostMapping("/orders/ECsucc")
+	public String ectest(@RequestParam("order") int order,HttpSession session, Model model) {
+		System.out.println(order);
+		oService.updateOrderStutas(order, "已付款");
+		
+//		Object memberNoObj = session.getAttribute("memberNo"); //
+//		if (memberNoObj != null) { //
+//			int memberNo = (int) memberNoObj; //
+
+		OrderDTO orderDTO = new OrderDTO();
+		Member member = mService.findByNo(1);
+		Orders memberOrder = oService.findnewOrderByMember(1);
+		System.out.println(member.getMemberName());
+
+		orderDTO.setMemberName(member.getMemberName());
+		orderDTO.setMemberEmail(member.getMemberEmail());
+		orderDTO.setMemberPhone(member.getMemberPhone());
+
+		Date orderDate = memberOrder.getOrderDate();
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+
+		orderDTO.setOrderDate(ft.format(orderDate));
+		orderDTO.setOrderName(memberOrder.getOrderName());
+		orderDTO.setOrderPhone(memberOrder.getOrderPhone());
+		orderDTO.setOrderShipAddress(memberOrder.getOrderShipAddress());
+		orderDTO.setOrderMessage(memberOrder.getOrderMessage());
+		orderDTO.setOrderTotalPrice(memberOrder.getOrderTotalPrice());
+		orderDTO.setOrderPayWay(memberOrder.getOrderPayWay());
+		orderDTO.setOrderShipping(memberOrder.getOrderShipping());
+
+		List<OrderItem> orderItemList = memberOrder.getOrderItems();
+
+		ArrayList<OrderItemDTO> OderItemDTOList = new ArrayList<>();
+		for (OrderItem orderItem : orderItemList) {
+			OrderItemDTO orderItemDTO = new OrderItemDTO();
+			orderItemDTO.setItemQuantity(orderItem.getItemQuantity());
+			orderItemDTO.setUnitPrice(orderItem.getUnitPrice());
+			Product product = pService.getProduct(orderItem.getProductNo());
+			orderItemDTO.setProductName(product.getProductName());
+			OderItemDTOList.add(orderItemDTO);
+		}
+		orderDTO.setOrderItemDTO(OderItemDTOList);
+		model.addAttribute("orderDTO", orderDTO);
+//			model.addAttribute("OderItemDTOList", OderItemDTOList);
+//		} //
+		
+		
 		return "product/ECpaySucc";
 	}
 	//進入分析圖表
@@ -176,6 +236,37 @@ public class OrderController {
 	@GetMapping("/orders/analysis")
 	public List<Map<Integer, Integer>> getAnalysis(Model model) {
 		return oService.getAnalysisService();
+	}
+	
+	// 編輯訂單
+	@ResponseBody
+	@GetMapping("/orders/editOrder")
+	public OrderDTO editOrder(int orderNo) {
+		
+		Orders memberOrder = oService.getOrder(orderNo);
+		
+		ArrayList<OrderItemDTO> OderItemDTOList = new ArrayList<>();
+		for (OrderItem orderItem : memberOrder.getOrderItems()) {
+			OrderItemDTO orderItemDTO = new OrderItemDTO();
+			orderItemDTO.setItemQuantity(orderItem.getItemQuantity());
+			orderItemDTO.setUnitPrice(orderItem.getUnitPrice());
+			Product product = pService.getProduct(orderItem.getProductNo());
+			orderItemDTO.setProductName(product.getProductName());
+			OderItemDTOList.add(orderItemDTO);
+		}
+		
+		OrderDTO editOrderDTO = new OrderDTO();
+		editOrderDTO.setOrderName(memberOrder.getOrderName());
+		editOrderDTO.setOrderPhone(memberOrder.getOrderPhone());
+		editOrderDTO.setOrderShipping(memberOrder.getOrderShipping());
+		editOrderDTO.setOrderShipAddress(memberOrder.getOrderShipAddress());
+		editOrderDTO.setOrderMessage(memberOrder.getOrderMessage());
+		editOrderDTO.setOrderPayWay(memberOrder.getOrderPayWay());
+		editOrderDTO.setOrderStatus(memberOrder.getOrderStatus());
+		
+		editOrderDTO.setOrderItemDTO(OderItemDTOList);
+		
+		return editOrderDTO;
 	}
 
 }

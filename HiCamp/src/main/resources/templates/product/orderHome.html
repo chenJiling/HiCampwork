@@ -13,14 +13,18 @@
 
   <title>HiCamp</title>
   <style>
-    .newTable tr {
-      display: flex;
-      margin: 10px 0px;
+    .edTable {
+      font-size: 15px;
+      /* background-color: #de1919; */
+      width: 500px;
+      text-align: center;
     }
 
-    .newTable td {
-      display: block;
-      margin: 0px 10px;
+    input {
+      width: 500px;
+      /* background-color: #de1919; */
+      border: transparent;
+      padding-left: 3px;
     }
   </style>
 </head>
@@ -54,127 +58,125 @@
               <table id="example" class="hover" style="width: 100%; font-size: 20px;">
                 <thead>
                   <tr>
-                    <th>訂單編號</th>orderNo
-                    <th>會員編號</th>memberNo
-                    <th>訂單日期</th>orderDate
-                    <th>訂單金額</th>orderTotalPrice
-                    <th>付款狀態</th>orderStatus
+                    <th>訂單編號</th>
+                    <th>訂購人</th>
+                    <th>訂單日期</th>
+                    <th>訂單金額</th>
+                    <th>付款狀態</th>
                     <th>查看</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <th:block th:each="order : ${allOrders}">
+                  <th:block th:each="order : ${orderDTOs}">
                     <tr>
                       <td th:text="${order.orderNo}"></td>
-                      <td th:text="${order.memberNo}"></td>
+                      <td th:text="${order.memberName}"></td>
                       <td th:text="${order.orderDate}"></td>
                       <td th:text="${order.orderTotalPrice}"></td>
                       <td th:text="${order.orderStatus}"></td>
-                      <form th:action="@{/order/getOrder}" method="get">
-                        <input name="orderNo" th:value="${order.orderNo}" type="hidden">
-                        <td><button class="btn btn-sm edit">編輯</button></td>
-                      </form>
+                      <td><button th:data-id="${order.orderNo}" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                          class="editBtn btn btn-sm edit" style="font-size: 20px;"><i
+                            class="fa-regular fa-pen-to-square" style="color: #3d3d3d;"></i></button></td>
                     </tr>
                   </th:block>
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th>訂單編號</th>orderNo
-                    <th>會員編號</th>memberNo
-                    <th>訂單日期</th>orderDate
-                    <th>訂單金額</th>orderTotalPrice
-                    <th>付款狀態</th>orderStatus
+                    <th>訂單編號</th>
+                    <th>訂購人</th>
+                    <th>訂單日期</th>
+                    <th>訂單金額</th>
+                    <th>付款狀態</th>
                     <th>查看</th>
                   </tr>
                 </tfoot>
               </table>
             </div>
             <!-- 只能到這裡喔 -->
-
+            <!-- 查看彈跳視窗 -->
             <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
               aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-lg">
+              <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">新增商品</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                   </div>
                   <div class="modal-body">
-                    <form id="addImage" action="#" enctype="multipart/form-data" method="post">
-                      <div style="display: flex; justify-content: space-around;">
-                        <div>
-                          <table class="newTable" style="width: 350px; font-size: 20px;">
-                            <tr>
-                              <td>商品標題</td>
-                              <td><input id="productName" name="productName" class="form-control" style="width:200px;"
-                                  required></td>
-                            </tr>
-                            <tr>
-                              <td>商品型態</td>
-                              <td><select id="productType" name="productType" class="form-select" style="width:200px;">
-                                  <option value="服飾">服飾</option>
-                                  <option value="配件">配件</option>
-                                  <option value="露營">露營</option>
-                                  <option value="登山健行">登山健行</option>
-                                </select></td>
-                            </tr>
-                            <tr>
-                              <td>商品介紹</td>
-                              <td><textarea id="productInfo" name="productInfo" class="form-control" row="5"
-                                  style="width:200px;"></textarea>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>商品金額</td>
-                              <td><input id="productPrice" name="productPrice" class="form-control" style="width:200px;"
-                                  required></td>
-                            </tr>
-                            <tr>
-                              <td>庫存數量</td>
-                              <td><input id="productQuantity" name="productQuantity" class="form-control" type="number"
-                                  style="width:200px;" required>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>商品狀態</td>
-                              <td><select id="productStutas" name="productStutas" class="form-select"
-                                  style="width:200px;">
-                                  <option value="上架">上架</option>
-                                  <option value="未上架">未上架</option>
-                                  <option value="下架">下架</option>
-                                </select></td>
-                            </tr>
-                            <tr>
-                              <td>首圖</td>
-                              <td><input type="file" id="bigPic" name="bigPic" class="form-control"
-                                  style="width: 200px;" />
-                                <div id="preview_pic" style="margin-top: 20px;"> </div>
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
-
-                        <div style="width:300px;">
-                          <div class="col">
-                            <h4> 請輸入五張介紹圖片: </h4>
-                            <input type="file" id="pics" name="files" class="form-control" multiple />
-                            <div id="preview_pics" style="margin-top: 20px;"> </div>
-                          </div>
-                          <div class="modal-footer">
-                            <button id="inputBtn" type="button" class="btn btn-primary">一鍵輸入</button>
-                            <button id="uploadBtn" type="submit" class="btn btn-primary">送出</button>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-
-
-
+                    <table>
+                      <tr>
+                        <td>收件者姓名</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderName" name="orderShipAddress"></td>
+                      </tr>
+                      <tr>
+                        <td>收件者電話</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderPhone" name="orderPhone"></td>
+                      </tr>
+                      <tr>
+                        <td>送貨方式</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderShipping" name="orderShipping"></td>
+                      </tr>
+                      <tr>
+                        <td>送貨地址</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderShipAddress" name="orderShipAddress" style="width: 100%;"></td>
+                      </tr>
+                      <tr>
+                        <td>訂單金額</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderTotalPrice" name="orderTotalPrice"></td>
+                      </tr>
+                      <tr>
+                        <td>付款方式</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderPayWay" name="orderPayWay"></td>
+                      </tr>
+                      <tr>
+                        <td>訂單備註</td>
+                        <td>：</td>
+                        <td><input type="text" name="orderMessage" id="orderMessage"> </td>
+                      </tr>
+                      <tr>
+                        <td>付款狀態</td>
+                        <td>：</td>
+                        <td><input type="text" id="orderStatus" name="orderStatus"></td>
+                      </tr>
+                    </table>
+                    <div id="productNameContainer"></div>
                   </div>
-
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                  </div>
                 </div>
               </div>
             </div>
+
+
+
+
+
+
+            <div id="edidTable">
+
+
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+
+                </li>
+              </ul>
+
+
+
+            </div>
+
+
+
           </div>
         </div>
       </div>
@@ -184,65 +186,6 @@
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
   <script>
-    let uploadBtn = document.getElementById('uploadBtn');
-    uploadBtn.addEventListener('click', (e) => {
-      e.preventDefault(); // 移除原本form表單功能(送出)
-      let addImg = document.getElementById('addImage');
-      let formimgObject = new FormData(addImg);
-      sendDataRequest(formimgObject);
-    })
-
-    function sendDataRequest(formaddObject) {
-      axios.post('http://localhost:8080/HiCamp/product/addProduct', formaddObject)
-        .then(response => {
-          console.log('add product okkkkkkk');
-          window.location.href = "http://localhost:8080/HiCamp/productHome"
-        })
-        .catch(err => {
-          console.log('wrongggggggg --err: ' + err);
-        })
-    }
-
-
-    $("#bigPic").change(function () {
-      readURL(this);
-    });
-    function readURL(input) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          var img = $("<img width='200'>").attr('src', e.target.result);
-          $('#preview_pic').append(img);
-        }
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-    $("#pics").change(function () {
-      $("#preview_pics").html();
-      readURLs(this);
-    });
-    function readURLs(input) {
-      if (input.files && input.files.length >= 0 && input.files.length <= 5) {
-        for (let i = 0; i < input.files.length; i++) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            var img = $("<img width='200'>").attr('src', e.target.result);
-            $('#preview_pics').append(img);
-          }
-          reader.readAsDataURL(input.files[i]);
-        }
-      }
-    }
-
-    let inputBtn = document.getElementById('inputBtn');
-    inputBtn.addEventListener('click', (e) => {
-      $("#productName").val("吸濕快乾登山機能長褲");
-      $("#productType").val("服飾");
-      $("#productInfo").val(`布料四面彈性活動零阻礙  採用3M吸濕排汗快乾舒適 抗UV有效阻擋紫外線`);
-      $("#productPrice").val(Math.floor(Math.random() * 10001));
-      $("#productQuantity").val(Math.floor(Math.random() * 11));
-      $("#productStutas").val("上架");
-    })
 
 
   </script>
@@ -251,6 +194,70 @@
     $(document).ready(function () {
       $('#example').DataTable();
     });
+
+    let editBtn = document.getElementsByClassName('editBtn');
+    for (i = 0; i < editBtn.length; i++) {
+      editBtn[i].addEventListener('click', function (e) {
+        let orderID = this.getAttribute('data-id');
+        getMemberOrder(orderID);
+      })
+    }
+
+    function getMemberOrder(orderID) {
+      $.ajax({
+        url: 'http://localhost:8080/HiCamp/orders/editOrder?orderNo=' + orderID,
+        type: 'get',
+        success: function (response) {
+          console.log(response.orderName);
+          $('#orderName').val(response.orderName);
+          $('#orderPhone').val(response.orderPhone);
+          $('#orderShipping').val(response.orderShipping);
+          $('#orderShipAddress').val(response.orderShipAddress);
+          $('#orderTotalPrice').val(response.orderTotalPrice);
+          $('#orderPayWay').val(response.orderPayWay);
+          $('#orderMessage').val(response.orderMessage);
+          $('#orderStatus').val(response.orderStatus);
+
+          var output = document.getElementById('productNameContainer');
+          let htmlString = '';
+          htmlString = `<table class="edTable">
+                          <tr>
+                          <td>商品名稱</td>
+                          <td>優惠</td>
+                          <td>商品數量</td>
+                          <td>單價</td>
+                          <td>小計</td>
+                          <td></td>
+                        </tr> `
+          response.orderItemDTO.forEach(function (data, index) {
+            console.log(data.itemQuantity);
+            console.log(data.unitPrice);
+            let productName = data.productName;
+            let itemQuantity = data.itemQuantity;
+            let unitPrice = data.unitPrice;
+            let subtotal = data.itemQuantity * data.unitPrice;
+
+            htmlString += `<tr>
+                          <td>${productName}</td>
+                          <td>None</td>
+                          <td>${itemQuantity}</td>
+                          <td>${unitPrice}</td>
+                          <td>${subtotal}</td>
+                          </tr>`;
+
+          });
+          htmlString += '</table>';
+          output.innerHTML = htmlString
+
+        },
+        error: function (err) {
+          console.log('errrrrr' + err.data);
+        }
+
+      })
+    }
+
+
   </script>
 </body>
 
