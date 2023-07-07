@@ -10,6 +10,7 @@
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+<<<<<<< HEAD
     
 
   <title>HiCamp</title>
@@ -25,6 +26,11 @@
       border: transparent;
       background-color: transparent;
     }
+=======
+
+  <title>HiCamp</title>
+  <style>
+>>>>>>> dcc9857359b2af6841cc9d669eea6b801a7eb8ab
   </style>
 </head>
 
@@ -58,7 +64,11 @@
                 <thead>
                   <tr>
                     <th>訂單編號</th>
+<<<<<<< HEAD
                     <th>訂購人</th>
+=======
+                    <th>會員編號</th>
+>>>>>>> dcc9857359b2af6841cc9d669eea6b801a7eb8ab
                     <th>訂單日期</th>
                     <th>訂單金額</th>
                     <th>付款狀態</th>
@@ -73,16 +83,24 @@
                       <td th:text="${order.orderDate}"></td>
                       <td th:text="${order.orderTotalPrice}"></td>
                       <td th:text="${order.orderStatus}"></td>
+<<<<<<< HEAD
                       <td><button th:data-id="${order.orderNo}" data-toggle="modal" data-target=".bd-example-modal-lg"
                           class="editBtn btn btn-sm edit" style="font-size: 20px;"><i
                             class="fa-regular fa-pen-to-square" style="color: #3d3d3d;"></i></button></td>
+=======
+                      <td><button class="btn btn-sm edit">編輯</button></td>
+>>>>>>> dcc9857359b2af6841cc9d669eea6b801a7eb8ab
                     </tr>
                   </th:block>
                 </tbody>
                 <tfoot>
                   <tr>
                     <th>訂單編號</th>
+<<<<<<< HEAD
                     <th>訂購人</th>
+=======
+                    <th>會員編號</th>
+>>>>>>> dcc9857359b2af6841cc9d669eea6b801a7eb8ab
                     <th>訂單日期</th>
                     <th>訂單金額</th>
                     <th>付款狀態</th>
@@ -92,6 +110,7 @@
               </table>
             </div>
             <!-- 只能到這裡喔 -->
+<<<<<<< HEAD
             <!-- 查看彈跳視窗 -->
             <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
               aria-hidden="true">
@@ -169,6 +188,8 @@
 
 
 
+=======
+>>>>>>> dcc9857359b2af6841cc9d669eea6b801a7eb8ab
 
           </div>
         </div>
@@ -178,6 +199,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
     crossorigin="anonymous"></script>
+<<<<<<< HEAD
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
     
   <script>
@@ -277,6 +299,17 @@
     }
 
 
+=======
+  <script>
+
+
+  </script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#example').DataTable();
+    });
+>>>>>>> dcc9857359b2af6841cc9d669eea6b801a7eb8ab
   </script>
 </body>
 
