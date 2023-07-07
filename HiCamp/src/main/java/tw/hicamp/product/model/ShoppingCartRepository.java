@@ -1,6 +1,7 @@
 package tw.hicamp.product.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,8 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Inte
 	
 	@Query(value = "delete from shoppingCart where memberNo = :memberNo", nativeQuery = true)
 	boolean delCartByMember(@Param("memberNo") int memberNo);
+
+	
+	
+	
 }

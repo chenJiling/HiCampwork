@@ -228,20 +228,7 @@ public class OrderController {
 		
 		return "product/ECpaySucc";
 	}
-	//進入分析圖表
-	@GetMapping("/orders/productAnalysis")
-	public String goAnalysis() {
-		return "product/productAnalysis";
-	}
-	
-	//分析圖表
-	@ResponseBody
-	@GetMapping("/orders/analysis")
-	public List<Map<Integer, Integer>> getAnalysis(Model model) {
-		return oService.getAnalysisService();
-	}
-	
-	// 取一筆訂單+明細
+	// 取一筆訂單+明細 orderHome
 	@ResponseBody
 	@GetMapping("/orders/editOrder")
 	public OrderDTO editOrder(int orderNo) {
@@ -267,6 +254,7 @@ public class OrderController {
 		editOrderDTO.setOrderShipAddress(memberOrder.getOrderShipAddress());
 		editOrderDTO.setOrderMessage(memberOrder.getOrderMessage());
 		editOrderDTO.setOrderPayWay(memberOrder.getOrderPayWay());
+		editOrderDTO.setOrderTotalPrice(memberOrder.getOrderTotalPrice());
 		editOrderDTO.setOrderStatus(memberOrder.getOrderStatus());
 		
 		editOrderDTO.setOrderItemDTO(OderItemDTOList);
@@ -287,5 +275,20 @@ public class OrderController {
 		return true;
 	}
 	
+	//進入分析圖表
+	@GetMapping("/orders/productAnalysis")
+	public String goAnalysis() {
+		return "product/productAnalysis";
+	}
+	
+	//分析圖表 每月銷售額
+	@ResponseBody
+	@GetMapping("/orders/analysis")
+	public List<Map<Integer, Integer>> getAnalysis(Model model) {
+		return oService.getAnalysisService();
+	}
+	
+	
 
 }
+

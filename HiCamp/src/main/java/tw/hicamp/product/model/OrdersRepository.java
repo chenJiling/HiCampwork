@@ -12,7 +12,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
 	@Query(value = "select top (1) * from orders where memberNo= :memberNo order by orderDate DESC", nativeQuery = true)
 	Orders findlastOrderByMember(@Param("memberNo") int memberNo);
-	
+	// 金額分析
 	@Query(value = "select month(orderdate) as 'month', sum(orderTotalPrice) as 'sumPrice' from orders group by month(orderdate)", nativeQuery = true)
 	List<Map<Integer, Integer>> findsumPriceGroupBymonth();
 }
