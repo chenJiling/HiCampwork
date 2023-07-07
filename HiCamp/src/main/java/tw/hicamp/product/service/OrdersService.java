@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.emitter.ScalarAnalysis;
 
 import jakarta.transaction.Transactional;
 import tw.hicamp.member.model.Member;
@@ -17,6 +18,7 @@ import tw.hicamp.member.model.MemberRepository;
 import tw.hicamp.product.model.OrderItem;
 import tw.hicamp.product.model.Orders;
 import tw.hicamp.product.model.OrdersRepository;
+import tw.hicamp.product.model.ShoppingCartRepository;
 
 
 @Service
@@ -26,6 +28,8 @@ public class OrdersService {
 	private OrdersRepository oRepo;
 	@Autowired
 	public MemberRepository mRepo;
+	@Autowired
+	public ShoppingCartRepository sCartRepo;
 
 	// 新增一筆訂單
 	public Orders addOrder(Orders order) {
@@ -57,10 +61,27 @@ public class OrdersService {
 		order.setOrderStatus(stutas);
 		return true;
 	}
+	
+	// 修改訂單 收件人、電話、地址、狀態
+	@Transactional
+	public boolean updateOrder(int orderNo, String orderName,String orderShipAddress, String orderPhone,String orderStatus) {
+		Orders order = oRepo.findById(orderNo).get();
+		order.setOrderName(orderName);
+		order.setOrderShipAddress(orderShipAddress);
+		order.setOrderPhone(orderPhone);
+		order.setOrderStatus(orderStatus);
+		
+		return true;
+	}
 
 	// 刪除訂單
 	public void delOrder(Integer orderNo) {
 		oRepo.deleteById(orderNo);
+	}
+	
+	// 刪除購物車
+	public void delCartBymemberNo(int memberNo) {
+		sCartRepo.delCartByMember(memberNo);
 	}
 	
 	// 取會員最近一筆訂單

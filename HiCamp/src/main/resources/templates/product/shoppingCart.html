@@ -309,7 +309,6 @@
 				$('.quantity').change(function () {
 					let qua = $(this).val();
 					let price = $(this).parent().next().children("input").val();
-					// let price = $('.productPrice').val();
 					console.log(price);
 					let sum = qua * price;
 					$(this).parent().next().next().children("input").val(sum);
@@ -395,6 +394,9 @@
 						data: addOrderData,
 						success: function () {
 							console.log(' 新增訂單成功');
+							window.location.href = "http://localhost:8080/HiCamp/orders/getOrder";
+						},
+						complete: function () {
 							window.location.href = "http://localhost:8080/HiCamp/orders/getOrder";
 						}
 

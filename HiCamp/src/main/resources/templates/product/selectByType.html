@@ -73,7 +73,7 @@
 					<a class="nav-link" href="http://localhost:8080/HiCamp/shopping/getProducts?productType=配件">配件</a>
 					<a class="nav-link" href="http://localhost:8080/HiCamp/shopping/getProducts?productType=露營">露營</a>
 				</nav>
-				<th:block th:each="product : ${productList}">
+				<th:block th:each="product : ${typePorductList}">
 					<div class="col-lg-4 col-md-6 text-center">
 						<div class="single-product-item">
 							<form id="addCartForm">
@@ -88,6 +88,7 @@
 
 								<input th:value="${product.productNo}" id="productNo" type="hidden">
 								<input th:value="${product.productPrice}" id="productPrice" type="hidden">
+								<input value="1" id="itemQuantity" type="hidden">
 								<button th:data-id="${product.productNo}"
 									class="addCart btn btn-primary btn-lg cart-btn"
 									style="background-color: #ff8800; border-color: #ff8800; border-radius: 10px;"> <i
@@ -109,7 +110,7 @@
 			e.preventDefault();
 			let delCartID = $(this).attr('data-id');
 			console.log(delCartID);
-			let price = $(this).prev("input").val();
+			let price = $('#productPrice').val();
 			console.log(price);
 			let itemQuantity = 1;
 			let Data = {
@@ -135,7 +136,6 @@
 				}
 
 			})
-
 		}
 	</script>
 </body>

@@ -29,11 +29,11 @@ public class ECPayPaymentAPIController {
 	
 	@PostMapping("/ecpayCheckout")
 	public String ecpayCheckout(HttpSession session) {
-		
+		int memberNo =11;
 //		Object memberNoObj = session.getAttribute("memberNo"); //
 //		int memberNo = (int) memberNoObj; //
 		
-		Orders memberNewOrder = ordersService.findnewOrderByMember(1);
+		Orders memberNewOrder = ordersService.findnewOrderByMember(memberNo);
 		Date orderDate= memberNewOrder.getOrderDate();
 		SimpleDateFormat ft = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String payDate = ft.format(orderDate).toString();

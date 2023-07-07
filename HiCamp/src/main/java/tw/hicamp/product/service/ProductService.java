@@ -82,5 +82,10 @@ public class ProductService {
 			return productNo;
 		}
 	}
+	
+	// 前台分類搜尋
+	public List<Product> findByType(String productType)	{
+		return pRepo.findByProductType(productType);
+	}
 
 }

@@ -80,14 +80,10 @@ public class ProductController {
 	@ResponseBody
 	@PostMapping("/product/addProduct")
 	public String insertProduct2(@RequestParam("productName") String productName,
-								@RequestParam("productType") String productType, 
-								@RequestParam("productInfo") String productInfo,
-								@RequestParam("productPrice") int productPrice,
-								@RequestParam("productQuantity") int productQuantity,
-								@RequestParam("productStutas") String productStutas, 
-								@RequestParam("bigPic") MultipartFile bigPic,
-								@RequestParam("files") MultipartFile[] files)
-			throws IOException {
+			@RequestParam("productType") String productType, @RequestParam("productInfo") String productInfo,
+			@RequestParam("productPrice") int productPrice, @RequestParam("productQuantity") int productQuantity,
+			@RequestParam("productStutas") String productStutas, @RequestParam("bigPic") MultipartFile bigPic,
+			@RequestParam("files") MultipartFile[] files) throws IOException {
 
 		Product product = new Product();
 		product.setProductName(productName);
@@ -118,13 +114,10 @@ public class ProductController {
 	@ResponseBody
 	@PostMapping("/product/updateProduct")
 	public Product updateProduct(@RequestParam("productNo") int productNo,
-								@RequestParam("productName") String productName,
-								@RequestParam("productType") String productType,
-								@RequestParam("productInfo") String productInfo,
-								@RequestParam("productPrice") int productPrice, 
-								@RequestParam("productQuantity") int productQuantity,
-								@RequestParam("productStutas") String productStutas
-								) throws IOException {
+			@RequestParam("productName") String productName, @RequestParam("productType") String productType,
+			@RequestParam("productInfo") String productInfo, @RequestParam("productPrice") int productPrice,
+			@RequestParam("productQuantity") int productQuantity, @RequestParam("productStutas") String productStutas)
+			throws IOException {
 
 		Product product = new Product();
 		product.setProductNo(productNo);
@@ -136,8 +129,8 @@ public class ProductController {
 		product.setProductStutas(productStutas);
 
 		pService.updateProductByNo(product);
-		
-		return product; 
+
+		return product;
 	}
 
 	// 取照片s
@@ -147,20 +140,21 @@ public class ProductController {
 		ResponseEntity<byte[]> productPics = pPicService.getProductPics(picId);
 		return productPics;
 	}
-	
-	//取大照片
+
+	// 取大照片
 	@ResponseBody
 	@GetMapping("/product/getBigPic")
-	public ResponseEntity<byte[]> getMemberPhoto(@RequestParam("productNo")int productNo){
+	public ResponseEntity<byte[]> getMemberPhoto(@RequestParam("productNo") int productNo) {
 		Product product = pService.getProduct(productNo);
 		byte[] bigPic = product.getProductBigPicture();
 		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bigPic);
 	}
-	
-	//更新大頭照
+
+	// 更新大頭照
 	@ResponseBody
 	@PostMapping("/product/updateBigPic")
-	public Integer updateBigPic(@RequestParam("productNo") int productNo,@RequestParam("bigPic")MultipartFile bigPic) {
+	public Integer updateBigPic(@RequestParam("productNo") int productNo,
+			@RequestParam("bigPic") MultipartFile bigPic) {
 		return pService.updateBicPic(productNo, bigPic);
 	}
 
@@ -180,44 +174,45 @@ public class ProductController {
 		pPicService.delProductPic(picNo);
 		return "刪除OK!!";
 	}
-	
+
 	// 更新商品介紹照片
 	@ResponseBody
 	@PostMapping("/product/resetPic")
-	public String resetPic(@RequestParam("productNo") Integer productNo ,@RequestParam("resetPics") MultipartFile[] files ) throws IOException {
-		
-			Product product = pService.getProduct(productNo);
-			
-			List<ProductPicture> photos = new ArrayList<>();
-			for (MultipartFile file : files) {
-				ProductPicture productPicture = new ProductPicture();
-				productPicture.setProductPicture(file.getBytes());
-				productPicture.setProduct(product);
-				photos.add(productPicture);
-			}
-			product.setPruductPictures(photos);
-			pService.addProduct(product);
-			return "更新照片完成";
-			
+	public String resetPic(@RequestParam("productNo") Integer productNo,
+			@RequestParam("resetPics") MultipartFile[] files) throws IOException {
+
+		Product product = pService.getProduct(productNo);
+
+		List<ProductPicture> photos = new ArrayList<>();
+		for (MultipartFile file : files) {
+			ProductPicture productPicture = new ProductPicture();
+			productPicture.setProductPicture(file.getBytes());
+			productPicture.setProduct(product);
+			photos.add(productPicture);
+		}
+		product.setPruductPictures(photos);
+		pService.addProduct(product);
+		return "更新照片完成";
+
 	}
-	
-	//前台主頁
+
+	// 前台主頁
 	@GetMapping("/shopping")
 	public String getShopProducts(Model m) {
 		List<Product> productList = pService.getAllProduct();
-		
+
 		List<Product> upPorduct = new ArrayList<>();
-		for (Product apro:productList) {
+		for (Product apro : productList) {
 			if (apro.getProductStutas().equals("上架")) {
 				upPorduct.add(apro);
 			}
 		}
-		
+
 		m.addAttribute("productList", upPorduct);
-		
+
 		return "product/shopping";
 	}
-	
+
 	// 前台取一筆資料
 	@GetMapping("/shopping/shopProduct")
 	public String getShopProduct(@RequestParam("productNo") int productNo, Model m) {
@@ -243,6 +238,22 @@ public class ProductController {
 
 		return "product/shopProduct";
 	}
-	
+
+	// 前台搜尋
+	@GetMapping("/shopping/getProducts")
+	public String getProducts(@RequestParam("productType") String productType, Model model) {
+		List<Product> productList = pService.findByType(productType);
+		System.out.println(productList);
+
+		List<Product> typePorduct = new ArrayList<>();
+		for (Product products : productList) {
+			if (products.getProductStutas().equals("上架") && products.getProductStutas().equals(productType)) {
+				typePorduct.add(products);
+			}
+		}
+		
+		model.addAttribute("typePorductList", productList);
+		return "product/selectByType";
+	}
 
 }

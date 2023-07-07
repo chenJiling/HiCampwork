@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
 import tw.hicamp.member.model.Member;
@@ -76,7 +77,7 @@ public class OrderController {
 //		Object memberNoObj = session.getAttribute("memberNo");
 //		if (memberNoObj != null) {
 //			int memberNo = (int) memberNoObj;
-		int memberNo = 1;
+		int memberNo = 11;
 		// 取得當前時間
 		Date date = new Date();
 
@@ -116,7 +117,9 @@ public class OrderController {
 		}
 		neworder.setOrderItems(newItemList);
 		oService.addOrder(neworder);
-		System.out.println("12132");
+		System.out.println("加入訂單成功");
+		oService.delCartBymemberNo(memberNo);
+		
 //		}
 
 		return "加入訂單成功";
@@ -125,14 +128,14 @@ public class OrderController {
 	// 撈訂單資訊顯示於訂單完成頁面
 	@GetMapping("/orders/getOrder")
 	public String getOrder(HttpSession session, Model model) {
-
+		int memberNo = 11;
 //		Object memberNoObj = session.getAttribute("memberNo"); //
 //		if (memberNoObj != null) { //
 //			int memberNo = (int) memberNoObj; //
 
 		OrderDTO orderDTO = new OrderDTO();
-		Member member = mService.findByNo(1);
-		Orders memberOrder = oService.findnewOrderByMember(1);
+		Member member = mService.findByNo(memberNo);
+		Orders memberOrder = oService.findnewOrderByMember(memberNo);
 		System.out.println(member.getMemberName());
 
 		orderDTO.setMemberName(member.getMemberName());
@@ -164,7 +167,7 @@ public class OrderController {
 		}
 		orderDTO.setOrderItemDTO(OderItemDTOList);
 		model.addAttribute("orderDTO", orderDTO);
-//			model.addAttribute("OderItemDTOList", OderItemDTOList);
+		
 //		} //
 
 		return "product/newOrder";
@@ -180,14 +183,14 @@ public class OrderController {
 	public String ectest(@RequestParam("order") int order,HttpSession session, Model model) {
 		System.out.println(order);
 		oService.updateOrderStutas(order, "已付款");
-		
+		int memberNo = 11;
 //		Object memberNoObj = session.getAttribute("memberNo"); //
 //		if (memberNoObj != null) { //
 //			int memberNo = (int) memberNoObj; //
 
 		OrderDTO orderDTO = new OrderDTO();
-		Member member = mService.findByNo(1);
-		Orders memberOrder = oService.findnewOrderByMember(1);
+		Member member = mService.findByNo(memberNo);
+		Orders memberOrder = oService.findnewOrderByMember(memberNo);
 		System.out.println(member.getMemberName());
 
 		orderDTO.setMemberName(member.getMemberName());
@@ -238,7 +241,7 @@ public class OrderController {
 		return oService.getAnalysisService();
 	}
 	
-	// 編輯訂單
+	// 取一筆訂單+明細
 	@ResponseBody
 	@GetMapping("/orders/editOrder")
 	public OrderDTO editOrder(int orderNo) {
@@ -256,6 +259,8 @@ public class OrderController {
 		}
 		
 		OrderDTO editOrderDTO = new OrderDTO();
+		editOrderDTO.setOrderNo(orderNo);
+		
 		editOrderDTO.setOrderName(memberOrder.getOrderName());
 		editOrderDTO.setOrderPhone(memberOrder.getOrderPhone());
 		editOrderDTO.setOrderShipping(memberOrder.getOrderShipping());
@@ -268,5 +273,19 @@ public class OrderController {
 		
 		return editOrderDTO;
 	}
+	
+	// 編輯訂單+明細
+	@ResponseBody
+	@PostMapping("/orders/setOrder")
+	public boolean setOrder(@RequestParam("orderNo") int orderNo,
+							@RequestParam("orderName") String orderName,
+							@RequestParam("orderShipAddress") String orderShipAddress,
+							@RequestParam("orderPhone") String orderPhone,
+							@RequestParam("orderStatus") String orderStatus) {
+//		System.out.println(orderNo+","+orderName+","+orderShipAddress+","+orderPhone+","+orderStatus);
+		oService.updateOrder(orderNo, orderName, orderShipAddress, orderPhone, orderStatus);
+		return true;
+	}
+	
 
 }

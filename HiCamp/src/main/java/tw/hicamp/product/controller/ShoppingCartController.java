@@ -38,22 +38,25 @@ public class ShoppingCartController {
 	@PostMapping("/shoppingCart/addcart")
 	public String addCart(HttpSession session, @RequestParam("productNo") int productNo,
 			@RequestParam("productPrice") int productPrice, @RequestParam("itemQuantity") int itemQuantity) {
+		int memberNo = 11;
 //		Object memberNoObj = session.getAttribute("memberNo");
 //		if (memberNoObj != null) {
 //			int memberNo = (int)memberNoObj;
-		ShoppingCart cart = sCartService.findCartByProductNo(productNo, 1);
+		ShoppingCart cart = sCartService.findCartByProductNo(productNo, memberNo);
 
 		// ****** 判斷商品庫存
 
 		if (cart != null) {
 			sCartService.updateItemQuantity(cart, itemQuantity);
+			System.out.println("更新"+memberNo+"商品"+productNo + "數量");
 		} else {
 			ShoppingCart newCart = new ShoppingCart();
-			newCart.setMemberNo(1);
+			newCart.setMemberNo(memberNo);
 			newCart.setItemQuantity(itemQuantity);
 			newCart.setProductPrice(productPrice);
 			newCart.setProductNo(productNo);
 			sCartService.addCart(newCart);
+			System.out.println("新增購物車");
 		}
 
 //	}
@@ -71,12 +74,13 @@ public class ShoppingCartController {
 	// 取會員購物車
 	@GetMapping("/shoppingCart/memberCart")
 	public String getMemberCart(HttpSession session, Model model) {
+		int memberNo = 11;
 //		Object memberNoObj = session.getAttribute("memberNo");
 //		if (memberNoObj != null) {
 //			int memberNo = (int)memberNoObj;
-		List<ShoppingCart> memberCartList = sCartService.getMemberCart(1);
+		List<ShoppingCart> memberCartList = sCartService.getMemberCart(memberNo);
 		List<CartDTO> cartDTOList = new ArrayList<>();
-		Member member = mService.findByNo(1);
+		Member member = mService.findByNo(memberNo);
 		for (ShoppingCart aCart : memberCartList) {
 			Product product = pService.getProduct(aCart.getProductNo());
 			CartDTO cartDTO = new CartDTO();
