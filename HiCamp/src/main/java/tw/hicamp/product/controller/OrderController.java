@@ -23,6 +23,7 @@ import tw.hicamp.product.model.OrderItemDTO;
 import tw.hicamp.product.model.Orders;
 import tw.hicamp.product.model.Product;
 import tw.hicamp.product.model.ShoppingCart;
+import tw.hicamp.product.model.AanlysisDTO;
 import tw.hicamp.product.service.OrderItemService;
 import tw.hicamp.product.service.OrdersService;
 import tw.hicamp.product.service.ProductService;
@@ -287,6 +288,14 @@ public class OrderController {
 	public List<Map<Integer, Integer>> getAnalysis(Model model) {
 		return oService.getAnalysisService();
 	}
+	
+	//分析圖表 以類別分析
+	@ResponseBody
+	@GetMapping("/orders/analysisByType")
+	public List<Map<Integer, Integer>> analysisQangSubtotalByType(){
+		return oItemService.findSubtotalQuantityGroupByType();
+	}
+	
 	
 	
 

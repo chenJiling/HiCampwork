@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -254,6 +255,12 @@ public class ProductController {
 		
 		model.addAttribute("typePorductList", productList);
 		return "product/selectByType";
+	}
+	
+	// 分頁功能
+	public Page<Product> showProducts(@RequestParam(name = "p", defaultValue = "1") Integer pageNum){
+		Page<Product> products = pService.findByPage(pageNum);
+		return products;
 	}
 
 }

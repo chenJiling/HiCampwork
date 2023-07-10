@@ -61,7 +61,7 @@ public class ProductService {
 	
 	//分頁功能
 	public Page<Product> findByPage(Integer pageNumber) {
-		Pageable pgb = PageRequest.of(pageNumber-1, 3, Sort.Direction.DESC, "added");
+		Pageable pgb = PageRequest.of(pageNumber-1, 3, Sort.Direction.DESC, "productNo");
 		
 		Page<Product> page = pRepo.findAll(pgb);
 		

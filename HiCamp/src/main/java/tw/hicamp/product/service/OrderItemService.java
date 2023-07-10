@@ -22,9 +22,19 @@ public class OrderItemService {
 		return oItemRepo.findItemByOrderNo(orderNo);
 	}
 	
-	//分析類別
+	//類別分析購買數量
 	public List<Map<String, Integer>> findQuantityByType(){
 		return oItemRepo.findtotalQuantityGroupByType();
+	}
+	
+	//類別分析銷售金額
+	public List<Map<String, Integer>> findSubtotalByType(){
+		return oItemRepo.findsubtotalPriceGroupByType();
+	}
+	
+	//類別排序分析購買數量及金額(取數量及金額)
+	public List<Map<Integer, Integer>> findSubtotalQuantityGroupByType(){
+		return oItemRepo.findSubtotalQuantityGroupByType();
 	}
 
 }
