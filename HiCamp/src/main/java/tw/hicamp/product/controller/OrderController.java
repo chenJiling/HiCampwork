@@ -74,11 +74,14 @@ public class OrderController {
 			@RequestParam("orderMessage") String orderMessage, @RequestParam("orderTotalPrice") int orderTotalPrice,
 			@RequestParam("orderPayWay") String orderPayWay, @RequestParam("orderShipping") String orderShipping)
 			throws IOException {
+		
 
-//		Object memberNoObj = session.getAttribute("memberNo");
-//		if (memberNoObj != null) {
-//			int memberNo = (int) memberNoObj;
-		int memberNo = 11;
+		Object memberNoObj = session.getAttribute("memberNo");
+		if (memberNoObj != null) {
+			int memberNo = (int) memberNoObj;
+			Integer countCart = sCartService.countCart(memberNo);
+			session.setAttribute("countCart", countCart);
+//		int memberNo = 1;
 		// 取得當前時間
 		Date date = new Date();
 
@@ -121,7 +124,7 @@ public class OrderController {
 		System.out.println("加入訂單成功");
 		oService.delCartBymemberNo(memberNo);
 		
-//		}
+		}
 
 		return "加入訂單成功";
 	}
@@ -129,10 +132,10 @@ public class OrderController {
 	// 撈訂單資訊顯示於訂單完成頁面
 	@GetMapping("/orders/getOrder")
 	public String getOrder(HttpSession session, Model model) {
-		int memberNo = 11;
-//		Object memberNoObj = session.getAttribute("memberNo"); //
-//		if (memberNoObj != null) { //
-//			int memberNo = (int) memberNoObj; //
+//		int memberNo = 11;
+		Object memberNoObj = session.getAttribute("memberNo"); //
+		if (memberNoObj != null) { //
+			int memberNo = (int) memberNoObj; //
 
 		OrderDTO orderDTO = new OrderDTO();
 		Member member = mService.findByNo(memberNo);
@@ -169,7 +172,7 @@ public class OrderController {
 		orderDTO.setOrderItemDTO(OderItemDTOList);
 		model.addAttribute("orderDTO", orderDTO);
 		
-//		} //
+		} //
 
 		return "product/newOrder";
 	}
@@ -184,15 +187,15 @@ public class OrderController {
 	public String ectest(@RequestParam("order") int order,HttpSession session, Model model) {
 		System.out.println(order);
 		oService.updateOrderStutas(order, "已付款");
-		int memberNo = 11;
-//		Object memberNoObj = session.getAttribute("memberNo"); //
-//		if (memberNoObj != null) { //
-//			int memberNo = (int) memberNoObj; //
+//		int memberNo = 1;
+		Object memberNoObj = session.getAttribute("memberNo"); //
+		if (memberNoObj != null) { //
+			int memberNo = (int) memberNoObj; //
 
 		OrderDTO orderDTO = new OrderDTO();
 		Member member = mService.findByNo(memberNo);
 		Orders memberOrder = oService.findnewOrderByMember(memberNo);
-		System.out.println(member.getMemberName());
+		System.out.println("MemberName"+ member.getMemberName());
 
 		orderDTO.setMemberName(member.getMemberName());
 		orderDTO.setMemberEmail(member.getMemberEmail());
@@ -224,7 +227,7 @@ public class OrderController {
 		orderDTO.setOrderItemDTO(OderItemDTOList);
 		model.addAttribute("orderDTO", orderDTO);
 //			model.addAttribute("OderItemDTOList", OderItemDTOList);
-//		} //
+		} //
 		
 		
 		return "product/ECpaySucc";

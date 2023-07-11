@@ -38,10 +38,10 @@ public class ShoppingCartController {
 	@PostMapping("/shoppingCart/addcart")
 	public String addCart(HttpSession session, @RequestParam("productNo") int productNo,
 			@RequestParam("productPrice") int productPrice, @RequestParam("itemQuantity") int itemQuantity) {
-		int memberNo = 11;
-//		Object memberNoObj = session.getAttribute("memberNo");
-//		if (memberNoObj != null) {
-//			int memberNo = (int)memberNoObj;
+//		int memberNo = 11;
+		Object memberNoObj = session.getAttribute("memberNo");
+		if (memberNoObj != null) {
+			int memberNo = (int)memberNoObj;
 		ShoppingCart cart = sCartService.findCartByProductNo(productNo, memberNo);
 
 		// ****** 判斷商品庫存
@@ -59,8 +59,9 @@ public class ShoppingCartController {
 			System.out.println("新增購物車");
 		}
 
-//	}
 		return "新增購物車成功";
+	}
+		return "0";
 
 	}
 
@@ -74,10 +75,13 @@ public class ShoppingCartController {
 	// 取會員購物車
 	@GetMapping("/shoppingCart/memberCart")
 	public String getMemberCart(HttpSession session, Model model) {
-		int memberNo = 11;
-//		Object memberNoObj = session.getAttribute("memberNo");
-//		if (memberNoObj != null) {
-//			int memberNo = (int)memberNoObj;
+//		int memberNo = 1;
+		Object memberNoObj = session.getAttribute("memberNo");
+		if (memberNoObj != null) {
+			int memberNo = (int)memberNoObj;
+			Integer countCart = sCartService.countCart(memberNo);
+			session.setAttribute("countCart", countCart);
+			
 		List<ShoppingCart> memberCartList = sCartService.getMemberCart(memberNo);
 		List<CartDTO> cartDTOList = new ArrayList<>();
 		Member member = mService.findByNo(memberNo);
@@ -98,9 +102,10 @@ public class ShoppingCartController {
 
 		model.addAttribute("cartDTOList", cartDTOList);
 		model.addAttribute("member", member);
-//		}
-
 		return "product/shoppingCart";
+		}
+		return "member/login";
+
 //		  return "取到";
 	}
 
@@ -111,17 +116,13 @@ public class ShoppingCartController {
 
 	@ResponseBody
 	@PostMapping("/shoppingCart/setQuantity")
-	public String setQuantity(HttpSession session, 
+	public String setQuantity( 
 			@RequestParam("cartId") int cartId,
 			@RequestParam("itemQuantity") int itemQuantity) {
-
-//		Object memberNoObj = session.getAttribute("memberNo");
-//		if (memberNoObj != null) {
-//			int memberNo = (int) memberNoObj;
+			
 			ShoppingCart cart = sCartService.findCartById(cartId);
 			sCartService.updateQuantity(cart, itemQuantity);
-//		}
-		return "setQuantity okkkkkk";
+			return "setQuantity okkkkkk";
 
 	}
 

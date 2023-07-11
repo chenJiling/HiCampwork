@@ -29,15 +29,14 @@ public class ECPayPaymentAPIController {
 	
 	@PostMapping("/ecpayCheckout")
 	public String ecpayCheckout(HttpSession session) {
-		int memberNo =11;
-//		Object memberNoObj = session.getAttribute("memberNo"); //
-//		int memberNo = (int) memberNoObj; //
+//		int memberNo =11;
+		Object memberNoObj = session.getAttribute("memberNo"); //
+		int memberNo = (int) memberNoObj; //
 		
 		Orders memberNewOrder = ordersService.findnewOrderByMember(memberNo);
 		Date orderDate= memberNewOrder.getOrderDate();
 		SimpleDateFormat ft = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String payDate = ft.format(orderDate).toString();
-//		System.out.println(payDate);
 		String totalPrice = Integer.toString(memberNewOrder.getOrderTotalPrice());
 		List<OrderItem> orderItems = memberNewOrder.getOrderItems();
 		StringJoiner productNameJoiner = new StringJoiner(", ");

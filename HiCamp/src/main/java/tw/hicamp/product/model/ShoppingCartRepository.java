@@ -17,6 +17,9 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Inte
 	
 	@Query(value = "delete from shoppingCart where memberNo = :memberNo", nativeQuery = true)
 	boolean delCartByMember(@Param("memberNo") int memberNo);
+	
+	@Query(value = "select count(itemQuantity) as countCart from shoppingCart where memberNo = :memberNo", nativeQuery = true)
+	Integer countCartByMemberNo(@Param("memberNo") int memberNo);
 
 	
 	

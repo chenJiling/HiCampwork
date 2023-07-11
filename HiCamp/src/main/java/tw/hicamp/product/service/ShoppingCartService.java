@@ -62,5 +62,10 @@ public class ShoppingCartService {
 		shoppingCart.setItemQuantity(itemQ);
 		return true;
 	}
+	
+	//取購物車數量
+	public Integer countCart(int memberNo) {
+		return scRepo.countCartByMemberNo(memberNo);
+	}
 
 }

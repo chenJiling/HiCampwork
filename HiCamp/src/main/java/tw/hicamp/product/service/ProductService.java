@@ -87,5 +87,15 @@ public class ProductService {
 	public List<Product> findByType(String productType)	{
 		return pRepo.findByProductType(productType);
 	}
+	
+	// 金額小到大
+	public List<Product> orderByPrice(){
+		return pRepo.orderByproductPrice();
+	}
+	
+	// 金額大到小
+	public List<Product> orderByPriceDESC(){
+		return pRepo.orderByproductPriceDESC();
+	}
 
 }

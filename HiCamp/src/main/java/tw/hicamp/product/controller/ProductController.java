@@ -21,6 +21,7 @@ import tw.hicamp.product.model.Product;
 import tw.hicamp.product.model.ProductDTO;
 import tw.hicamp.product.model.ProductPicture;
 import tw.hicamp.product.service.ProductService;
+import tw.hicamp.product.service.ShoppingCartService;
 import tw.hicamp.product.service.ProductPictureService;
 
 @Controller
@@ -30,16 +31,14 @@ public class ProductController {
 	private ProductService pService;
 	@Autowired
 	private ProductPictureService pPicService;
+	@Autowired
+	private ShoppingCartService shoppingCartService;
 
 	@GetMapping("/productHome.test")
 	@ResponseBody
 	public List<Product> getAllProductsTest(Model m) {
-
 		List<Product> product = pService.getAllProduct();
-//		System.out.println("有東西嗎" + product);
-
 		m.addAttribute("products", product);
-
 		return product;
 	}
 
@@ -199,7 +198,7 @@ public class ProductController {
 
 	// 前台主頁
 	@GetMapping("/shopping")
-	public String getShopProducts(Model m) {
+	public String getShopProducts(Model m, HttpSession session) {
 		List<Product> productList = pService.getAllProduct();
 
 		List<Product> upPorduct = new ArrayList<>();
@@ -208,10 +207,28 @@ public class ProductController {
 				upPorduct.add(apro);
 			}
 		}
-
+		Object memberObj = session.getAttribute("memberNo");
+		if (memberObj != null) {
+			int memberNo = (int)memberObj;
+			Integer countCart = shoppingCartService.countCart(memberNo);
+			session.setAttribute("countCart", countCart);
+		}
 		m.addAttribute("productList", upPorduct);
 
 		return "product/shopping";
+	}
+	// 前台主頁ajax
+	@ResponseBody
+	@GetMapping("/shopping/allproducts")
+	public List<Product> getAllprProducts(){
+		List<Product> productList = pService.getAllProduct();
+		List<Product> upPorduct = new ArrayList<>();
+		for (Product apro : productList) {
+			if (apro.getProductStutas().equals("上架")) {
+				upPorduct.add(apro);
+			}
+		}
+		return upPorduct;
 	}
 
 	// 前台取一筆資料
@@ -244,17 +261,37 @@ public class ProductController {
 	@GetMapping("/shopping/getProducts")
 	public String getProducts(@RequestParam("productType") String productType, Model model) {
 		List<Product> productList = pService.findByType(productType);
-		System.out.println(productList);
 
 		List<Product> typePorduct = new ArrayList<>();
 		for (Product products : productList) {
-			if (products.getProductStutas().equals("上架") && products.getProductStutas().equals(productType)) {
-				typePorduct.add(products);
+			if (products.getProductStutas().equals("上架") ) {
+					typePorduct.add(products);
 			}
 		}
+		System.out.println(typePorduct);
 		
-		model.addAttribute("typePorductList", productList);
+		model.addAttribute("typePorductList", typePorduct);
 		return "product/selectByType";
+	}
+	
+	// 前台依金額小到大排序
+	@ResponseBody
+	@GetMapping("/shopping/orderByPrice")
+	public List<Product> orderByPrice(){
+		List<Product> productList = pService.orderByPrice();
+		List<Product> typePorduct = new ArrayList<>();
+		for (Product products : productList) {
+			if (products.getProductStutas().equals("上架") ) {
+					typePorduct.add(products);
+			}
+		}
+		return typePorduct;
+	}
+	// 前台依金額大到小排序
+	@ResponseBody
+	@GetMapping("/shopping/orderByPriceDESC")
+	public List<Product> orderByPriceDESC(){
+		return pService.orderByPriceDESC();
 	}
 	
 	// 分頁功能

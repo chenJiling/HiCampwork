@@ -112,7 +112,7 @@
 								</td>
 								<td>
 									<input type="text" class="unit"
-										th:value="${cart.productPrice} * ${cart.productQuantity}"
+										th:value="${cart.productPrice} * ${cart.itemQuantity}"
 										style="width:100%; outline: none; border: transparent;" readonly>
 								</td>
 								<td>
@@ -359,6 +359,7 @@
 						.then(res => {
 							totalPriceCal();
 							console.log('delete goodddddd');
+							$("#countCart").text(parseInt($("#countCart").text())-1);
 						})
 						.catch(err => {
 							console.log('delete err' + err);
