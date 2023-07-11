@@ -39,7 +39,7 @@
 </head>
 
 <body>
-	<button onclick="scrollToTop()" id="scrollButton">
+	<button id="scrollButton">
 		<h1 class="animate__animated animate__bounce"><i class="fa-solid fa-arrow-up"></i></h1>
 	</button>
 
@@ -100,7 +100,6 @@
 						href="http://localhost:8080/HiCamp/shopping/getProducts?productType=服飾">服飾</a>
 					<a class="nav-link" href="http://localhost:8080/HiCamp/shopping/getProducts?productType=配件">配件</a>
 					<a class="nav-link" href="http://localhost:8080/HiCamp/shopping/getProducts?productType=露營">露營</a>
-					<a class="aaaa nav-link">金額大到小</a>
 					<select name="productTypeSelect" id="productTypeSelect">
 						<option value="排序">排序</option>
 						<option value="價格高到低">價格高到低</option>
@@ -118,7 +117,7 @@
 	<div th:replace="~{/layout/frontBottomBar}"></div>
 	<script>
 		console.log($("#productTypeSelect").val());
-		$("#productTypeSelect").change(function(){
+		$(".nav #productTypeSelect").change(function () {
 			console.log('123')
 		})
 	</script>
@@ -130,7 +129,7 @@
 				console.log('122333');
 			});
 			// 金額排序ajax
-			$("#productTypeSelect").change(function () {
+			$(document).on('change', '#productTypeSelect', function() {
 				console.log($(this).val());
 				// 獲取所選擇的值
 				var selectedValue = $(this).val();
@@ -154,6 +153,7 @@
 						htmlMaker(allProducts);
 						//加入購物車
 						addCartFun();
+						
 					}
 				})
 			}
@@ -205,7 +205,7 @@
 						"itemQuantity": itemQuantity
 					}
 					addShoppingCart(Data);
-				})
+				});
 				function addShoppingCart(cartData) {
 					$.ajax({
 						url: 'http://localhost:8080/HiCamp/shoppingCart/addcart',
@@ -226,13 +226,16 @@
 							}
 						}
 					})
-				}
-			}
+				};
+			};
 
 
 
 
-
+			$(document).on("click", "#scrollButton", function(){
+				scrollToTop();
+			});
+			
 
 			// 函式: 檢查滾動位置並顯示/隱藏回到頂部按鈕
 			window.onscroll = function () {
@@ -253,20 +256,20 @@
 			function scrollToTop() {
 				document.body.scrollTop = 0; // For Safari
 				document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-			}
+			};
 
 			// 排序
 			function compareByPriceDESC(a, b) {
 				return b.productPrice - a.productPrice;
-			}
+			};
 			function compareByPrice(a, b) {
 				return a.productPrice - b.productPrice;
-			}
-
+			};
 
 			function htmlMaker(response) {
 				var output = document.getElementById('productContent');
 				let htmlString = '';
+				$(".col-lg-4.col-md-6.text-center").remove();
 				response.forEach(element => {
 
 					htmlString += `
@@ -293,7 +296,7 @@
 									`
 				});
 				output.innerHTML += htmlString
-			}
+			};
 			getAllproducts();
 
 		})
